@@ -1,0 +1,136 @@
+//
+//  OSHomeViewController.m
+//  iphone-client
+//
+//  Created by gdyer on 13/06/2016.
+//  Copyright © 2016 openSNP. All rights reserved.
+//
+
+#import "OSHomeViewController.h"
+#import "OSTableViewCell.h"
+#import "OSFeedItem.h"
+
+@interface OSHomeViewController ()
+@property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
+@end
+
+@implementation OSHomeViewController
+
+- (void)viewDidLoad {
+    // Do any additional setup after loading the view, typically from a nib.
+    [super viewDidLoad];
+    self.healthStore = [[HKHealthStore alloc] init];
+    self.cellData = [[NSMutableArray alloc] init];
+    
+    // don't show lines for empty cells
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 20)];
+    footer.backgroundColor = [UIColor clearColor];
+    self.tableView.tableFooterView = footer;
+    [self.tableView setContentInset:UIEdgeInsetsMake(20, 0, 0, 0)];
+    
+    // set the view's background color
+    [self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+    
+    self.navigationItem.title = @"openSNP";
+    
+    UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStyleDone target:self action:@selector(viewSettings)];
+    self.navigationItem.rightBarButtonItem = settings;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if ([HKHealthStore isHealthDataAvailable]) {
+        NSSet *readDataTypes = [self dataTypesToRead];
+        
+        [self.healthStore requestAuthorizationToShareTypes:NULL readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
+            if (!success) {
+                NSLog(@"HealthKit access error: %@", error);
+                return;
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // Update based on user's health information.
+                [self checkAccess];
+            });
+        }];
+    } else {
+    }
+}
+
+- (void)checkAccess {
+    for (HKObjectType *type in [self dataTypesToRead]) {
+        HKQuantityType *quantity = [HKObjectType quantityTypeForIdentifier:type.identifier];
+        NSLog(@"%d, %@ <===", quantity == NULL, quantity);
+        
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *iden = @"reuseCell";
+    OSTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:iden];
+    OSFeedItem *item = [_cellData objectAtIndex:[indexPath row]];
+    cell.articleBody.text = item.body;
+    cell.imgView.image = item.image;
+    cell.dateTag.text = item.dateLabel;
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 68.;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+}
+
+
+
+//- (void)printAge {
+//    NSError *error;
+//    NSDate *dateOfBirth = [self.healthStore dateOfBirthWithError:&error];
+//}
+
+
+// Returns data to upload
+- (NSSet *)dataTypesToRead {
+    // unfortunately, this appears to be the most elegant solution
+    return [NSSet setWithObjects:[HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMassIndex],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierLeanBodyMass],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyFatPercentage],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyTemperature],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierRespiratoryRate],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBasalEnergyBurned],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierOxygenSaturation],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodGlucose],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierStepCount],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDistanceWalkingRunning],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierFlightsClimbed],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierAppleExerciseTime],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDistanceCycling],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierPeripheralPerfusionIndex],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierElectrodermalActivity],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierInhalerUsage],
+                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierNumberOfTimesFallen],
+                                [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBiologicalSex],
+                                [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierDateOfBirth],
+                                [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBloodType],
+                                [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierFitzpatrickSkinType], nil];
+}
+
+
+- (void)viewSettings {
+    // TODO
+}
+
+@end
