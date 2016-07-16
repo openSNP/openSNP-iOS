@@ -9,8 +9,11 @@
 #import "OSHomeViewController.h"
 #import "OSTableViewCell.h"
 #import "OSFeedItem.h"
+#import "HKHealthStore+OSExtensions.h"
 
-@interface OSHomeViewController ()
+@interface OSHomeViewController () {
+    int n_types_obtained;
+}
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
 @end
 
@@ -63,10 +66,31 @@
 }
 
 - (void)checkAccess {
+    NSSet *typesToRead = [self dataTypesToRead];
+    n_types_obtained = [typesToRead count];
+    
+    
     for (HKObjectType *type in [self dataTypesToRead]) {
         HKQuantityType *quantity = [HKObjectType quantityTypeForIdentifier:type.identifier];
-        NSLog(@"%d, %@ <===", quantity == NULL, quantity);
         
+        [self.healthStore os_mostRecentQuantitySampleOfType:quantity predicate:nil completion:^(HKQuantity *mostRecentQuantity, NSError *error) {
+            if (!mostRecentQuantity) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    // not available
+                    n_types_obtained--;
+                });
+            }
+            else {
+                // Determine the weight in the required unit.
+                HKUnit *weightUnit = [HKUnit poundUnit];
+                double usersWeight = [mostRecentQuantity doubleValueForUnit:weightUnit];
+                
+                // Update the user interface.
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog([NSNumberFormatter localizedStringFromNumber:@(usersWeight) numberStyle:NSNumberFormatterNoStyle]);
+                });
+            }
+        }];
     }
 }
 
@@ -90,25 +114,23 @@
 
 
 
-//- (void)printAge {
-//    NSError *error;
-//    NSDate *dateOfBirth = [self.healthStore dateOfBirthWithError:&error];
-//}
+- (NSDictionary *)readCharacteristics {
+    NSError *error;
+    NSDate *fitzpatrick = [self.healthStore fitzpatrickSkinTypeWithError:&error];
+    
+    
+    return NULL;
+    
+}
 
 
 // Returns data to upload
 - (NSSet *)dataTypesToRead {
-    // unfortunately, this appears to be the most elegant solution
     return [NSSet setWithObjects:[HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight],
-                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMassIndex],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierLeanBodyMass],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyFatPercentage],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate],
-                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyTemperature],
-                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierRespiratoryRate],
-                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBasalEnergyBurned],
-                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierOxygenSaturation],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodGlucose],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic],
@@ -117,8 +139,6 @@
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierFlightsClimbed],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierAppleExerciseTime],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDistanceCycling],
-                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned],
-                                [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierPeripheralPerfusionIndex],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierElectrodermalActivity],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierInhalerUsage],
                                 [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierNumberOfTimesFallen],
