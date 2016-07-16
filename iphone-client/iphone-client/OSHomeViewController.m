@@ -12,7 +12,7 @@
 #import "HKHealthStore+OSExtensions.h"
 
 @interface OSHomeViewController () {
-    int n_types_obtained;
+    unsigned long n_types_obtained;
 }
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
 @end
@@ -42,7 +42,6 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -87,7 +86,7 @@
                 
                 // Update the user interface.
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    NSLog([NSNumberFormatter localizedStringFromNumber:@(usersWeight) numberStyle:NSNumberFormatterNoStyle]);
+                    NSLog(@"%@", [NSNumberFormatter localizedStringFromNumber:@(usersWeight) numberStyle:NSNumberFormatterNoStyle]);
                 });
             }
         }];
@@ -109,6 +108,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    // TODO
     
 }
 
@@ -117,6 +117,7 @@
 - (NSDictionary *)readCharacteristics {
     NSError *error;
     NSDate *fitzpatrick = [self.healthStore fitzpatrickSkinTypeWithError:&error];
+    // TODO
     
     
     return NULL;

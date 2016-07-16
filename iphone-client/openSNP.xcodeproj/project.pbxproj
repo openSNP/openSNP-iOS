@@ -13,6 +13,7 @@
 		1543B3A01D33A13300FECE7A /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 1543B39E1D33A13300FECE7A /* clock.png */; };
 		1543B3A11D33A13300FECE7A /* clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1543B39F1D33A13300FECE7A /* clock@2x.png */; };
 		154CBF161D3A655500FBBD17 /* HKHealthStore+OSExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 154CBF151D3A655500FBBD17 /* HKHealthStore+OSExtensions.m */; };
+		154CBF191D3A7A1A00FBBD17 /* OSHealthPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 154CBF181D3A7A1A00FBBD17 /* OSHealthPair.m */; };
 		156363851D29D9A700567EDB /* OSTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 156363841D29D9A700567EDB /* OSTableViewCell.m */; };
 		1563638B1D29DEEA00567EDB /* OSFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1563638A1D29DEEA00567EDB /* OSFeedItem.m */; };
 		1563638F1D2CE6A900567EDB /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1563638E1D2CE6A900567EDB /* logo.png */; };
@@ -52,6 +53,8 @@
 		1543B39F1D33A13300FECE7A /* clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock@2x.png"; sourceTree = "<group>"; };
 		154CBF141D3A655500FBBD17 /* HKHealthStore+OSExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HKHealthStore+OSExtensions.h"; sourceTree = "<group>"; };
 		154CBF151D3A655500FBBD17 /* HKHealthStore+OSExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HKHealthStore+OSExtensions.m"; sourceTree = "<group>"; };
+		154CBF171D3A7A1A00FBBD17 /* OSHealthPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSHealthPair.h; sourceTree = "<group>"; };
+		154CBF181D3A7A1A00FBBD17 /* OSHealthPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSHealthPair.m; sourceTree = "<group>"; };
 		156363831D29D9A700567EDB /* OSTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSTableViewCell.h; sourceTree = "<group>"; };
 		156363841D29D9A700567EDB /* OSTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSTableViewCell.m; sourceTree = "<group>"; };
 		156363891D29DEEA00567EDB /* OSFeedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFeedItem.h; sourceTree = "<group>"; };
@@ -102,6 +105,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		154CBF1A1D3A7AD000FBBD17 /* helpers */ = {
+			isa = PBXGroup;
+			children = (
+				154CBF141D3A655500FBBD17 /* HKHealthStore+OSExtensions.h */,
+				154CBF151D3A655500FBBD17 /* HKHealthStore+OSExtensions.m */,
+				154CBF171D3A7A1A00FBBD17 /* OSHealthPair.h */,
+				154CBF181D3A7A1A00FBBD17 /* OSHealthPair.m */,
+				156363891D29DEEA00567EDB /* OSFeedItem.h */,
+				1563638A1D29DEEA00567EDB /* OSFeedItem.m */,
+				156363831D29D9A700567EDB /* OSTableViewCell.h */,
+				156363841D29D9A700567EDB /* OSTableViewCell.m */,
+			);
+			name = helpers;
+			sourceTree = "<group>";
+		};
+		154CBF1B1D3A7AE300FBBD17 /* vc */ = {
+			isa = PBXGroup;
+			children = (
+				158288CE1D0FA50500798ECA /* OSHomeViewController.h */,
+				158288CF1D0FA50500798ECA /* OSHomeViewController.m */,
+			);
+			name = vc;
+			sourceTree = "<group>";
+		};
 		158288BC1D0FA50500798ECA = {
 			isa = PBXGroup;
 			children = (
@@ -128,14 +155,8 @@
 				1582890D1D0FA84100798ECA /* iphone-client.entitlements */,
 				158288CB1D0FA50500798ECA /* OSAppDelegate.h */,
 				158288CC1D0FA50500798ECA /* OSAppDelegate.m */,
-				154CBF141D3A655500FBBD17 /* HKHealthStore+OSExtensions.h */,
-				154CBF151D3A655500FBBD17 /* HKHealthStore+OSExtensions.m */,
-				158288CE1D0FA50500798ECA /* OSHomeViewController.h */,
-				158288CF1D0FA50500798ECA /* OSHomeViewController.m */,
-				156363891D29DEEA00567EDB /* OSFeedItem.h */,
-				1563638A1D29DEEA00567EDB /* OSFeedItem.m */,
-				156363831D29D9A700567EDB /* OSTableViewCell.h */,
-				156363841D29D9A700567EDB /* OSTableViewCell.m */,
+				154CBF1B1D3A7AE300FBBD17 /* vc */,
+				154CBF1A1D3A7AD000FBBD17 /* helpers */,
 				158288D11D0FA50500798ECA /* Main.storyboard */,
 				158288D41D0FA50500798ECA /* Assets.xcassets */,
 				158288D61D0FA50500798ECA /* LaunchScreen.storyboard */,
@@ -330,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				158288D01D0FA50500798ECA /* OSHomeViewController.m in Sources */,
+				154CBF191D3A7A1A00FBBD17 /* OSHealthPair.m in Sources */,
 				156363851D29D9A700567EDB /* OSTableViewCell.m in Sources */,
 				154CBF161D3A655500FBBD17 /* HKHealthStore+OSExtensions.m in Sources */,
 				158288CD1D0FA50500798ECA /* OSAppDelegate.m in Sources */,
