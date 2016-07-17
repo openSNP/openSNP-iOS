@@ -38,6 +38,10 @@
     
     UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStyleDone target:self action:@selector(viewSettings)];
     self.navigationItem.rightBarButtonItem = settings;
+    
+    UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+    [refresh addTarget:self action:@selector(updateFeed) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refresh;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -56,7 +60,7 @@
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                // Update based on user's health information.
+                // update based on user's health information.
                 [self checkAccess];
             });
         }];
@@ -75,7 +79,7 @@
         [self.healthStore os_mostRecentQuantitySampleOfType:quantity predicate:nil completion:^(HKQuantity *mostRecentQuantity, NSError *error) {
             if (!mostRecentQuantity) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    // not available
+                    // quantity not available
                     n_types_obtained--;
                 });
             }
@@ -91,37 +95,6 @@
             }
         }];
     }
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *iden = @"reuseCell";
-    OSTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:iden];
-    OSFeedItem *item = [_cellData objectAtIndex:[indexPath row]];
-    cell.articleBody.text = item.body;
-    cell.imgView.image = item.image;
-    cell.dateTag.text = item.dateLabel;
-    return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 68.;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // TODO
-    
-}
-
-
-
-- (NSDictionary *)readCharacteristics {
-    NSError *error;
-    NSDate *fitzpatrick = [self.healthStore fitzpatrickSkinTypeWithError:&error];
-    // TODO
-    
-    
-    return NULL;
-    
 }
 
 
@@ -149,9 +122,40 @@
                                 [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierFitzpatrickSkinType], nil];
 }
 
+#pragma mark Segues
 
 - (void)viewSettings {
     // TODO
 }
+
+#pragma mark Table view delegate methods
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *iden = @"reuseCell";
+    OSTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:iden];
+    OSFeedItem *item = [_cellData objectAtIndex:[indexPath row]];
+    cell.articleBody.text = item.body;
+    cell.imgView.image = item.image;
+    cell.dateTag.text = item.dateLabel;
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 68.;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+#pragma mark Connections
+- (void)updateFeed {
+    
+}
+
 
 @end
