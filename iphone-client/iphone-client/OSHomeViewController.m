@@ -87,51 +87,62 @@
 }
 
 
-- (NSArray *)dataTypesAndUnits {
-    return @[@[HKQuantityTypeIdentifierBodyMassIndex, [HKUnit countUnit]],
-             @[HKQuantityTypeIdentifierBodyFatPercentage, [HKUnit percentUnit]],
-             @[HKQuantityTypeIdentifierHeight, [HKUnit meterUnit]],
-             @[HKQuantityTypeIdentifierBodyMass, [HKUnit gramUnit]],
-             @[HKQuantityTypeIdentifierLeanBodyMass, [HKUnit gramUnit]],
-             @[HKQuantityTypeIdentifierStepCount, [HKUnit countUnit]],
-             @[HKQuantityTypeIdentifierDistanceWalkingRunning, [HKUnit meterUnit]],
-             @[HKQuantityTypeIdentifierDistanceCycling, [HKUnit meterUnit]],
-             @[HKQuantityTypeIdentifierBasalEnergyBurned, [HKUnit jouleUnit]],
-             @[HKQuantityTypeIdentifierActiveEnergyBurned, [HKUnit jouleUnit]],
-             @[HKQuantityTypeIdentifierFlightsClimbed, [HKUnit countUnit]],
-             @[HKQuantityTypeIdentifierNikeFuel, [HKUnit countUnit]],
-             @[HKQuantityTypeIdentifierAppleExerciseTime, [HKUnit secondUnit]],
-             @[HKQuantityTypeIdentifierHeartRate, [HKUnit unitFromString:@"count/sec"]],
-             @[HKQuantityTypeIdentifierBodyTemperature, [HKUnit degreeCelsiusUnit]],
-             @[HKQuantityTypeIdentifierBasalBodyTemperature, [HKUnit degreeCelsiusUnit]],
-             @[HKQuantityTypeIdentifierBloodPressureSystolic, [HKUnit millimeterOfMercuryUnit]],
-             @[HKQuantityTypeIdentifierBloodPressureDiastolic, [HKUnit millimeterOfMercuryUnit]],
-             @[HKQuantityTypeIdentifierRespiratoryRate, [HKUnit unitFromString:@"count/sec"]],
-             @[HKQuantityTypeIdentifierOxygenSaturation, [HKUnit percentUnit]],
-             @[HKQuantityTypeIdentifierPeripheralPerfusionIndex, [HKUnit percentUnit]],
-             @[HKQuantityTypeIdentifierBloodGlucose, [[HKUnit moleUnitWithMetricPrefix:HKMetricPrefixMilli molarMass:HKUnitMolarMassBloodGlucose] unitDividedByUnit:[HKUnit literUnit]]],
-             @[HKQuantityTypeIdentifierNumberOfTimesFallen, [HKUnit countUnit]],
-             @[HKQuantityTypeIdentifierElectrodermalActivity, [HKUnit siemenUnit]],
-             @[HKQuantityTypeIdentifierBloodAlcoholContent, [HKUnit percentUnit]],
-             @[HKQuantityTypeIdentifierInhalerUsage, [HKUnit countUnit]],
-             @[HKQuantityTypeIdentifierForcedVitalCapacity, [HKUnit unitFromString:@"cm^3"]],
-             @[HKQuantityTypeIdentifierForcedExpiratoryVolume1, [HKUnit unitFromString:@"cm^3"]],
-             @[HKQuantityTypeIdentifierPeakExpiratoryFlowRate, [HKUnit unitFromString:@"cm^3"]]];
+- (NSArray *)characteristics {
+    return @[[HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBiologicalSex],
+             [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierDateOfBirth],
+             [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBloodType],
+             [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierFitzpatrickSkinType]];
 }
+
+
+- (NSArray <OSHealthPair *>*)dataTypesAndUnits {
+    return [@[@[HKQuantityTypeIdentifierBodyMassIndex, [HKUnit countUnit]],
+              @[HKQuantityTypeIdentifierBodyFatPercentage, [HKUnit percentUnit]],
+              @[HKQuantityTypeIdentifierHeight, [HKUnit meterUnit]],
+              @[HKQuantityTypeIdentifierBodyMass, [HKUnit gramUnit]],
+              @[HKQuantityTypeIdentifierLeanBodyMass, [HKUnit gramUnit]],
+              @[HKQuantityTypeIdentifierStepCount, [HKUnit countUnit]],
+              @[HKQuantityTypeIdentifierDistanceWalkingRunning, [HKUnit meterUnit]],
+              @[HKQuantityTypeIdentifierDistanceCycling, [HKUnit meterUnit]],
+              @[HKQuantityTypeIdentifierBasalEnergyBurned, [HKUnit jouleUnit]],
+              @[HKQuantityTypeIdentifierActiveEnergyBurned, [HKUnit jouleUnit]],
+              @[HKQuantityTypeIdentifierFlightsClimbed, [HKUnit countUnit]],
+              @[HKQuantityTypeIdentifierNikeFuel, [HKUnit countUnit]],
+              @[HKQuantityTypeIdentifierAppleExerciseTime, [HKUnit secondUnit]],
+              @[HKQuantityTypeIdentifierHeartRate, [HKUnit unitFromString:@"count/sec"]],
+              @[HKQuantityTypeIdentifierBodyTemperature, [HKUnit degreeCelsiusUnit]],
+              @[HKQuantityTypeIdentifierBasalBodyTemperature, [HKUnit degreeCelsiusUnit]],
+              @[HKQuantityTypeIdentifierBloodPressureSystolic, [HKUnit millimeterOfMercuryUnit]],
+              @[HKQuantityTypeIdentifierBloodPressureDiastolic, [HKUnit millimeterOfMercuryUnit]],
+              @[HKQuantityTypeIdentifierRespiratoryRate, [HKUnit unitFromString:@"count/sec"]],
+              @[HKQuantityTypeIdentifierOxygenSaturation, [HKUnit percentUnit]],
+              @[HKQuantityTypeIdentifierPeripheralPerfusionIndex, [HKUnit percentUnit]],
+              @[HKQuantityTypeIdentifierBloodGlucose, [[HKUnit moleUnitWithMetricPrefix:HKMetricPrefixMilli molarMass:HKUnitMolarMassBloodGlucose] unitDividedByUnit:[HKUnit literUnit]]],
+              @[HKQuantityTypeIdentifierNumberOfTimesFallen, [HKUnit countUnit]],
+              @[HKQuantityTypeIdentifierElectrodermalActivity, [HKUnit siemenUnit]],
+              @[HKQuantityTypeIdentifierBloodAlcoholContent, [HKUnit percentUnit]],
+              @[HKQuantityTypeIdentifierInhalerUsage, [HKUnit countUnit]],
+              @[HKQuantityTypeIdentifierForcedVitalCapacity, [HKUnit unitFromString:@"cm^3"]],
+              @[HKQuantityTypeIdentifierForcedExpiratoryVolume1, [HKUnit unitFromString:@"cm^3"]],
+              @[HKQuantityTypeIdentifierPeakExpiratoryFlowRate, [HKUnit unitFromString:@"cm^3"]]]
+            map:^(id x, NSUInteger i) {
+                return [[OSHealthPair alloc] initWithQuantityTypeId:x[0] unit:x[1]];
+            }];
+}
+
+
+
 
 
 // Returns data to upload
 - (NSSet *)dataTypesToRead {
-    NSArray *types = [[self dataTypesAndUnits] map:^(id x, NSUInteger i) {
-        return x[0];
+    NSArray *types = [[self dataTypesAndUnits] map:^(OSHealthPair *x, NSUInteger i) {
+        return x.type;
     }];
     
     
     return [NSSet setWithArray:
-            [types arrayByAddingObjectsFromArray:@[[HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBiologicalSex],
-                                                   [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierDateOfBirth],
-                                                   [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBloodType],
-                                                   [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierFitzpatrickSkinType]]]];
+            [types arrayByAddingObjectsFromArray:@];
 }
 
 

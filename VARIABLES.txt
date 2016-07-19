@@ -43,3 +43,47 @@ HK_EXTERN NSString * const HKCharacteristicTypeIdentifierBiologicalSex NS_AVAILA
 HK_EXTERN NSString * const HKCharacteristicTypeIdentifierBloodType NS_AVAILABLE_IOS(8_0);     // NSNumber (HKCharacteristicBloodType)
 HK_EXTERN NSString * const HKCharacteristicTypeIdentifierDateOfBirth NS_AVAILABLE_IOS(8_0);   // NSDate
 HK_EXTERN NSString * const HKCharacteristicTypeIdentifierFitzpatrickSkinType NS_AVAILABLE_IOS(9_0); // HKFitzpatrickSkinType
+
+
+
+
+
+
+
+// fetching the value for a HKCharacteristicsType subclass goes directly to enums for sex, blood, and Fitzpatrick
+
+// HKCharacteristicBiologicalSex = 
+typedef enum : NSInteger {
+   HKBiologicalSexNotSet = 0,
+   HKBiologicalSexFemale,
+   HKBiologicalSexMale,
+   HKBiologicalSexOther,
+} HKBiologicalSex;
+
+
+// HKCharacteristicBloodType = 
+typedef enum : NSInteger {
+   HKBloodTypeNotSet = 0,
+   HKBloodTypeAPositive,
+   HKBloodTypeANegative,
+   HKBloodTypeBPositive,
+   HKBloodTypeBNegative,
+   HKBloodTypeABPositive,
+   HKBloodTypeABNegative,
+   HKBloodTypeOPositive,
+   HKBloodTypeONegative,
+} HKBloodType;
+
+
+// HKFitzpatrickSkinType = 
+typedef enum : NSInteger {
+   HKFitzpatrickSkinTypeNotSet = 1,
+   HKFitzpatrickSkinTypeI,
+   HKFitzpatrickSkinTypeII,
+   HKFitzpatrickSkinTypeIII,
+   HKFitzpatrickSkinTypeIV,
+   HKFitzpatrickSkinTypeV,
+   HKFitzpatrickSkinTypeVI,
+} HKFitzpatrickSkinType;
+
+
