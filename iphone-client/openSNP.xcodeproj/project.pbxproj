@@ -23,6 +23,7 @@
 		157EAB971D3DD9A000553D28 /* logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 157EAB951D3DD9A000553D28 /* logo@2x.png */; };
 		157EAB991D3DE7A600553D28 /* clock_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 157EAB981D3DE7A600553D28 /* clock_grey@2x.png */; };
 		157EAB9B1D3DE7CB00553D28 /* clock_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = 157EAB9A1D3DE7CB00553D28 /* clock_grey.png */; };
+		157EAB9E1D3E06F300553D28 /* NSArray+OSFunctionalMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 157EAB9D1D3E06F300553D28 /* NSArray+OSFunctionalMap.m */; };
 		158288CA1D0FA50500798ECA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 158288C91D0FA50500798ECA /* main.m */; };
 		158288CD1D0FA50500798ECA /* OSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 158288CC1D0FA50500798ECA /* OSAppDelegate.m */; };
 		158288D01D0FA50500798ECA /* OSHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 158288CF1D0FA50500798ECA /* OSHomeViewController.m */; };
@@ -71,6 +72,8 @@
 		157EAB951D3DD9A000553D28 /* logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo@2x.png"; sourceTree = "<group>"; };
 		157EAB981D3DE7A600553D28 /* clock_grey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock_grey@2x.png"; sourceTree = "<group>"; };
 		157EAB9A1D3DE7CB00553D28 /* clock_grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clock_grey.png; sourceTree = "<group>"; };
+		157EAB9C1D3E06F300553D28 /* NSArray+OSFunctionalMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+OSFunctionalMap.h"; sourceTree = "<group>"; };
+		157EAB9D1D3E06F300553D28 /* NSArray+OSFunctionalMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+OSFunctionalMap.m"; sourceTree = "<group>"; };
 		158288C51D0FA50500798ECA /* openSNP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = openSNP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		158288C91D0FA50500798ECA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		158288CB1D0FA50500798ECA /* OSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSAppDelegate.h; sourceTree = "<group>"; };
@@ -118,14 +121,16 @@
 		154CBF1A1D3A7AD000FBBD17 /* helpers */ = {
 			isa = PBXGroup;
 			children = (
-				154CBF141D3A655500FBBD17 /* HKHealthStore+OSExtensions.h */,
-				154CBF151D3A655500FBBD17 /* HKHealthStore+OSExtensions.m */,
 				154CBF171D3A7A1A00FBBD17 /* OSHealthPair.h */,
 				154CBF181D3A7A1A00FBBD17 /* OSHealthPair.m */,
 				156363891D29DEEA00567EDB /* OSFeedItem.h */,
 				1563638A1D29DEEA00567EDB /* OSFeedItem.m */,
 				156363831D29D9A700567EDB /* OSTableViewCell.h */,
 				156363841D29D9A700567EDB /* OSTableViewCell.m */,
+				154CBF141D3A655500FBBD17 /* HKHealthStore+OSExtensions.h */,
+				154CBF151D3A655500FBBD17 /* HKHealthStore+OSExtensions.m */,
+				157EAB9C1D3E06F300553D28 /* NSArray+OSFunctionalMap.h */,
+				157EAB9D1D3E06F300553D28 /* NSArray+OSFunctionalMap.m */,
 			);
 			name = helpers;
 			sourceTree = "<group>";
@@ -137,6 +142,15 @@
 				158288CF1D0FA50500798ECA /* OSHomeViewController.m */,
 			);
 			name = vc;
+			sourceTree = "<group>";
+		};
+		157EAB9F1D3E070A00553D28 /* interface */ = {
+			isa = PBXGroup;
+			children = (
+				158288D11D0FA50500798ECA /* Main.storyboard */,
+				158288D61D0FA50500798ECA /* LaunchScreen.storyboard */,
+			);
+			name = interface;
 			sourceTree = "<group>";
 		};
 		158288BC1D0FA50500798ECA = {
@@ -167,9 +181,8 @@
 				158288CC1D0FA50500798ECA /* OSAppDelegate.m */,
 				154CBF1B1D3A7AE300FBBD17 /* vc */,
 				154CBF1A1D3A7AD000FBBD17 /* helpers */,
-				158288D11D0FA50500798ECA /* Main.storyboard */,
+				157EAB9F1D3E070A00553D28 /* interface */,
 				158288D41D0FA50500798ECA /* Assets.xcassets */,
-				158288D61D0FA50500798ECA /* LaunchScreen.storyboard */,
 				158288D91D0FA50500798ECA /* Info.plist */,
 				15D7C77A1D216024002C084D /* images */,
 				158288C81D0FA50500798ECA /* Supporting Files */,
@@ -372,6 +385,7 @@
 			files = (
 				158288D01D0FA50500798ECA /* OSHomeViewController.m in Sources */,
 				154CBF191D3A7A1A00FBBD17 /* OSHealthPair.m in Sources */,
+				157EAB9E1D3E06F300553D28 /* NSArray+OSFunctionalMap.m in Sources */,
 				156363851D29D9A700567EDB /* OSTableViewCell.m in Sources */,
 				154CBF161D3A655500FBBD17 /* HKHealthStore+OSExtensions.m in Sources */,
 				158288CD1D0FA50500798ECA /* OSAppDelegate.m in Sources */,

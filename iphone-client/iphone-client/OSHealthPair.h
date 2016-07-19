@@ -11,7 +11,7 @@
 
 @interface OSHealthPair : NSObject
 
-- (id)initWithQuantityType:(HKQuantityType *)quantityType unit:(HKUnit *)unit;
+- (id)initWithQuantityTypeId:(NSString *)qtIdentifier unit:(HKUnit *)unit;
 
 @property (strong) HKQuantityType *type;
 @property (strong) HKUnit *unit;

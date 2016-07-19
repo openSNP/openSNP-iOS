@@ -9,10 +9,10 @@
 #import "OSHealthPair.h"
 
 @implementation OSHealthPair
-- (id)initWithQuantityType:(HKQuantityType *)quantityType unit:(HKUnit *)unit {
+- (id)initWithQuantityTypeId:(nonnull NSString *)qtIdentifier unit:(HKUnit *)unit {
     self = [super init];
     if (self) {
-        _type = quantityType;
+        _type = [HKObjectType quantityTypeForIdentifier:qtIdentifier];
         _unit = unit;
     }
     

@@ -7,8 +7,11 @@ This iPhone app uploads your Apple Health data (phenotypes) to openSNP. Such dat
 
 You can submit feature requests for the app on `Issues`_.
 
+
 Planned features
 ----------------
+
+See which data we're planning on using in `VARIABLES.txt <VARIABLES.txt>`__ 
 
 From the app/iPhone-settings
 
