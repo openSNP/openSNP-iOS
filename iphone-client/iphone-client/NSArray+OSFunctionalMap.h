@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+// simple category to provide a functional-programming style map/lambda interface
 @interface NSArray (OSFunctionalMap)
 
 - (NSArray *)map:(id (^)(id x, NSUInteger i))lambda ;

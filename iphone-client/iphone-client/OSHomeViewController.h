@@ -11,6 +11,7 @@
 
 @interface OSHomeViewController : UITableViewController
 @property (nonatomic) HKHealthStore *healthStore;
+
 - (NSSet *)dataTypesToRead;
 @end
 

@@ -1,5 +1,5 @@
 //
-//  OSTableViewCell.h
+//  OSInfoTableViewCell.h
 //  openSNP
 //
 //  Created by gdyer on 03/07/2016.
@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OSTableViewCell : UITableViewCell
+// OSInfoTableViewCells have no action when tapped; they're purely informational!
+@interface OSInfoTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *dateTag;
 @property (weak, nonatomic) IBOutlet UILabel *articleBody;

@@ -7,13 +7,21 @@
 //
 
 #import "OSHomeViewController.h"
-#import "OSTableViewCell.h"
+#import "OSInfoTableViewCell.h"
+#import "OSActionTableViewCell.h"
 #import "OSFeedItem.h"
 #import "OSHealthPair.h"
 #import "NSArray+OSFunctionalMap.h"
+#import "OSLoginViewController.h"
+
+#define LOGIN_URL @"https://opensnp.2pitau.org/login"
+#define AUTHENTICATED_DEFAULT_KEY @"user_has_authenticated"
 
 @interface OSHomeViewController ()
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
+typedef enum : NSInteger {
+    OSCellActionLogin = 0
+} OSCellAction;
 @end
 
 @implementation OSHomeViewController
@@ -47,12 +55,24 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)serveItem:(OSFeedItem *)item {
+    [_cellData addObject:item];
+    [self.tableView reloadData];
+}
+
 - (void)displayError:(NSString *)message {
     [_cellData removeAllObjects];
     OSFeedItem *errorItem = [[OSFeedItem alloc] initWithBody:message date:[NSDate date] imageName:@"exclamation_mark.png"];
-    [_cellData addObject:errorItem];
-    [self.tableView reloadData];
+    [self serveItem:errorItem];
 }
+
+
+- (void)displayLoginAction {
+    [_cellData removeAllObjects];
+    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"Please login with openSNP" actionId:OSCellActionLogin];
+    [self serveItem:actionItem];
+}
+
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -66,8 +86,11 @@
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                // update based on user's health information.
-                [self checkAccess];
+                if (![[NSUserDefaults standardUserDefaults] boolForKey:AUTHENTICATED_DEFAULT_KEY]) {
+                    // user hasn't authenticated
+                    [self displayLoginAction];
+                    
+                }
             });
         }];
     } else {
@@ -75,19 +98,9 @@
     }
 }
 
-- (void)checkAccess {
-    // TODO
-    NSSet *typesToRead = [self dataTypesToRead];
-    
-    
-    for (HKObjectType *type in [self dataTypesToRead]) {
-        HKQuantityType *quantity = [HKObjectType quantityTypeForIdentifier:type.identifier];
-        
-    }
-}
-
 
 - (NSArray *)characteristicsToRead {
+    // characteristics are attributes users set only once, unlike quantities
     return @[[HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBiologicalSex],
              [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierDateOfBirth],
              [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBloodType],
@@ -109,12 +122,12 @@
               @[HKQuantityTypeIdentifierFlightsClimbed, [HKUnit countUnit]],
               @[HKQuantityTypeIdentifierNikeFuel, [HKUnit countUnit]],
               @[HKQuantityTypeIdentifierAppleExerciseTime, [HKUnit secondUnit]],
-              @[HKQuantityTypeIdentifierHeartRate, [HKUnit unitFromString:@"count/sec"]],
+              @[HKQuantityTypeIdentifierHeartRate, [HKUnit unitFromString:@"count/min"]],
               @[HKQuantityTypeIdentifierBodyTemperature, [HKUnit degreeCelsiusUnit]],
               @[HKQuantityTypeIdentifierBasalBodyTemperature, [HKUnit degreeCelsiusUnit]],
               @[HKQuantityTypeIdentifierBloodPressureSystolic, [HKUnit millimeterOfMercuryUnit]],
               @[HKQuantityTypeIdentifierBloodPressureDiastolic, [HKUnit millimeterOfMercuryUnit]],
-              @[HKQuantityTypeIdentifierRespiratoryRate, [HKUnit unitFromString:@"count/sec"]],
+              @[HKQuantityTypeIdentifierRespiratoryRate, [HKUnit unitFromString:@"count/min"]],
               @[HKQuantityTypeIdentifierOxygenSaturation, [HKUnit percentUnit]],
               @[HKQuantityTypeIdentifierPeripheralPerfusionIndex, [HKUnit percentUnit]],
               @[HKQuantityTypeIdentifierBloodGlucose, [[HKUnit moleUnitWithMetricPrefix:HKMetricPrefixMilli molarMass:HKUnitMolarMassBloodGlucose] unitDividedByUnit:[HKUnit literUnit]]],
@@ -145,25 +158,35 @@
 
 
 
-#pragma mark Segues
-
-- (void)viewSettings {
-    // TODO
-}
 
 #pragma mark Table view delegate methods
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *iden = @"reuseCell";
-    OSTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:iden];
-    if (!cell) {
-        cell = [[OSTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
+    OSFeedItem *item = _cellData[indexPath.row];
+    
+    if (item.cellClass == [OSInfoTableViewCell class]) {
+        static NSString *iden = @"infoCell";
+        OSInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:iden];
+        if (!cell) {
+            // the style choice is meaningless; this is simpler than writing a custom initializer
+            cell = [[OSInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
+        }
+        cell.articleBody.text = item.body;
+        cell.imgView.image = item.image;
+        cell.dateTag.text = item.dateLabel;
+        return cell;
+    } else {
+        static NSString *iden = @"actionCell";
+        OSActionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:iden];
+        if (!cell) {
+            // the style choice is meaningless; this is simpler than writing a custom initializer
+            cell = [[OSActionTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
+        }
+        
+        cell.actionDescriptionLabel.text = item.actionDescription;
+        cell.actionId = item.actionId;
+        return cell;
     }
-    OSFeedItem *item = [_cellData objectAtIndex:[indexPath row]];
-    cell.articleBody.text = item.body;
-    cell.imgView.image = item.image;
-    cell.dateTag.text = item.dateLabel;
-    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -171,7 +194,17 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    OSFeedItem *item = _cellData[indexPath.row];
     
+    if (item.cellClass == [OSActionTableViewCell class]) {
+        switch (item.actionId) {
+            case OSCellActionLogin:
+                [self presentLogin];
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -180,6 +213,18 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _cellData.count;
+}
+
+
+
+#pragma mark Transitions 
+
+- (void)viewSettings {
+    // TODO
+}
+- (void)presentLogin {
+    OSLoginViewController *loginVC = [[OSLoginViewController alloc] initWithURLString:LOGIN_URL];
+    [self presentViewController:loginVC animated:YES completion:nil];
 }
 
 #pragma mark Connections

@@ -14,8 +14,10 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="separatorColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="reuseCell" rowHeight="68" id="58E-4U-GX4" customClass="OSTableViewCell">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="infoCell" rowHeight="68" id="58E-4U-GX4" customClass="OSInfoTableViewCell">
                                 <rect key="frame" x="0.0" y="28" width="320" height="68"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="58E-4U-GX4" id="lpO-JV-6Gg">
@@ -64,10 +66,36 @@
                                         <constraint firstItem="9V8-Au-v4S" firstAttribute="trailing" secondItem="2An-vg-VLl" secondAttribute="trailing" id="rzr-CI-dhf"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections>
                                     <outlet property="articleBody" destination="2An-vg-VLl" id="CiE-PB-CRI"/>
                                     <outlet property="dateTag" destination="W6G-Io-6bJ" id="mmS-mV-m8R"/>
                                     <outlet property="imgView" destination="yds-IJ-re5" id="M9I-eY-iyk"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="actionCell" id="RXX-vS-OV8" customClass="OSActionTableViewCell">
+                                <rect key="frame" x="0.0" y="96" width="320" height="68"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RXX-vS-OV8" id="Qgw-M1-A5d">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="67"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9wA-PW-dTv">
+                                            <rect key="frame" x="8" y="23" width="304" height="21"/>
+                                            <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="trailing" secondItem="Qgw-M1-A5d" secondAttribute="trailingMargin" id="9Ft-9f-Znn"/>
+                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="centerY" secondItem="Qgw-M1-A5d" secondAttribute="centerY" id="Tpg-jS-CjG"/>
+                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="leading" secondItem="Qgw-M1-A5d" secondAttribute="leadingMargin" id="Tuz-Rx-S9n"/>
+                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="top" secondItem="Qgw-M1-A5d" secondAttribute="topMargin" constant="15" id="yvg-Sb-GbP"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="actionDescriptionLabel" destination="9wA-PW-dTv" id="yhe-xF-A2Z"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

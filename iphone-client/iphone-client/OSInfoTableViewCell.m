@@ -6,9 +6,9 @@
 //  Copyright © 2016 openSNP. All rights reserved.
 //
 
-#import "OSTableViewCell.h"
+#import "OSInfoTableViewCell.h"
 
-@implementation OSTableViewCell
+@implementation OSInfoTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -16,6 +16,7 @@
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
+    [super setSelected:FALSE animated:TRUE];
 }
+
 @end
