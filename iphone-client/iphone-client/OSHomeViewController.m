@@ -87,7 +87,7 @@
 }
 
 
-- (NSArray *)characteristics {
+- (NSArray *)characteristicsToRead {
     return @[[HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBiologicalSex],
              [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierDateOfBirth],
              [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBloodType],
@@ -132,8 +132,6 @@
 
 
 
-
-
 // Returns data to upload
 - (NSSet *)dataTypesToRead {
     NSArray *types = [[self dataTypesAndUnits] map:^(OSHealthPair *x, NSUInteger i) {
@@ -142,7 +140,7 @@
     
     
     return [NSSet setWithArray:
-            [types arrayByAddingObjectsFromArray:@];
+            [types arrayByAddingObjectsFromArray:[self characteristicsToRead]]];
 }
 
 
@@ -186,7 +184,7 @@
 
 #pragma mark Connections
 - (void)updateFeed {
-    
+    // TODO
 }
 
 
