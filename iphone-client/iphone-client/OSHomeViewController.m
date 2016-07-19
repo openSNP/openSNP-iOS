@@ -48,6 +48,13 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)displayError:(NSString *)message {
+    [_cellData removeAllObjects];
+    OSFeedItem *errorItem = [[OSFeedItem alloc] initWithBody:message date:[NSDate date] imageName:@"exclamation_mark.png"];
+    [_cellData addObject:errorItem];
+    [self.tableView reloadData];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if ([HKHealthStore isHealthDataAvailable]) {
@@ -55,7 +62,7 @@
         
         [self.healthStore requestAuthorizationToShareTypes:NULL readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
             if (!success) {
-                NSLog(@"HealthKit access error: %@", error);
+                [self displayError:@"Problem getting Health data!"];
                 return;
             }
             
@@ -65,6 +72,7 @@
             });
         }];
     } else {
+        [self displayError:@"Health data isn't available on this device!"];
     }
 }
 
@@ -122,6 +130,8 @@
                                 [HKCharacteristicType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierFitzpatrickSkinType], nil];
 }
 
+
+
 #pragma mark Segues
 
 - (void)viewSettings {
@@ -133,6 +143,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *iden = @"reuseCell";
     OSTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:iden];
+    if (!cell) {
+        cell = [[OSTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
+    }
     OSFeedItem *item = [_cellData objectAtIndex:[indexPath row]];
     cell.articleBody.text = item.body;
     cell.imgView.image = item.image;
@@ -150,6 +163,10 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return _cellData.count;
 }
 
 #pragma mark Connections

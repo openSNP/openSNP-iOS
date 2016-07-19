@@ -17,4 +17,7 @@
 
 @property (strong) NSString *dateLabel;
 @property (strong) UIImage *image;
+
+- (id)initWithBody:(NSString *)b date:(NSDate *)d imageName:(NSString *)i;
+    
 @end

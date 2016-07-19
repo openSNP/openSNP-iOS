@@ -10,34 +10,26 @@
 
 @implementation OSFeedItem
 
+- (id)initWithBody:(NSString *)b date:(NSDate *)d imageName:(NSString *)i {
+    self = [super init];
+    if (self) {
+        self.body = b;
+        self.imageName = i;
+        self.image = [UIImage imageNamed:self.imageName];
+        self.date = d;
+        self.dateLabel = [self formatDateLabel];
+    }
+    
+    return self;
+}
+
 - (NSString *)formatDateLabel {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
     dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     
     return [dateFormatter stringFromDate:self.date];
-}
-
-- (void)setDate:(NSDate *)date {
-    self.date = date;
-    self.dateLabel = [self formatDateLabel];
-}
-
-- (NSDate *)date {
-    return self.date;
-}
-
-- (void)setImageName:(NSString *)imageName {
-    self.imageName = imageName;
-    self.image = [UIImage imageNamed:imageName];
-    if (!_image) {
-        NSLog(@"(!!!) Image \"%@\" not found", imageName);
-    }
-}
-
-- (NSString *)imageName {
-    return self.imageName;
 }
 
 @end
