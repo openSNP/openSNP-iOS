@@ -8,6 +8,7 @@
 
 #import "OSLoginViewController.h"
 #import "OSConstants.h"
+#import "KeychainItemWrapper.h"
 
 @implementation OSLoginViewController
 
@@ -46,9 +47,11 @@
     NSDictionary *headers = [(NSHTTPURLResponse*)resp.response allHeaderFields];
     NSString *key;
     if ([[webView request].URL.absoluteString isEqualToString:LOGIN_URL] && (key = [headers objectForKey:@"KEY"]) != NULL) {
-        [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:AUTHENTICATED_DEFAULT_KEY];
+        // store the user's uuid in their keychain
+        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
+        [keychain setObject:(__bridge NSString *)kSecAttrAccessibleWhenUnlocked forKey:(__bridge NSString *)kSecAttrAccessible];
+        [keychain setObject:key forKey:(__bridge NSString *)kSecValueData];
         
-        // TODO: store key in keychain
         
         [self dismissViewControllerAnimated:TRUE completion:nil];
     }

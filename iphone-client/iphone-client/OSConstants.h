@@ -6,12 +6,9 @@
 //  Copyright © 2016 openSNP. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#ifndef OPENSNP_CONSTANTS
+#define OPENSNP_CONSTANTS TRUE
 #define LOGIN_URL @"https://opensnp.2pitau.org/login"
-#define AUTHENTICATED_DEFAULT_KEY @"user_has_authenticated"
-
-@interface OSConstants : NSObject
-@end
-// silence ridiculous XCode warning
-@implementation OSConstants
-@end
+//#define AUTHENTICATED_DEFAULT_KEY @"user_has_authenticated"
+#define KEYCHAIN_ID @"openSNP"
+#endif

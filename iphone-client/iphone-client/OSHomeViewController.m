@@ -14,6 +14,7 @@
 #import "NSArray+OSFunctionalMap.h"
 #import "OSLoginViewController.h"
 #import "OSConstants.h"
+#import "KeychainItemWrapper.h"
 
 
 @interface OSHomeViewController ()
@@ -54,6 +55,12 @@ typedef enum : NSInteger {
     [super didReceiveMemoryWarning];
 }
 
+- (NSString *)userId {
+    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
+    return [keychain objectForKey:(__bridge NSString *)kSecValueData];
+}
+
+
 - (void)serveItem:(OSFeedItem *)item {
     [_cellData addObject:item];
     [self.tableView reloadData];
@@ -68,7 +75,7 @@ typedef enum : NSInteger {
 
 - (void)displayLoginAction {
     [_cellData removeAllObjects];
-    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"Please login with openSNP" actionId:OSCellActionLogin];
+    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"※ Please login with openSNP" actionId:OSCellActionLogin];
     [self serveItem:actionItem];
 }
 
@@ -85,11 +92,11 @@ typedef enum : NSInteger {
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                if (![[NSUserDefaults standardUserDefaults] boolForKey:AUTHENTICATED_DEFAULT_KEY]) {
-                    // user hasn't authenticated
-                    [self displayLoginAction];
-                    
-                }
+                //if (![[NSUserDefaults standardUserDefaults] boolForKey:AUTHENTICATED_DEFAULT_KEY]) {
+                //    // user hasn't authenticated
+                //    [self displayLoginAction];
+                //    
+                //}
             });
         }];
     } else {
