@@ -9,6 +9,7 @@
 #import "OSLoginViewController.h"
 #import "OSConstants.h"
 #import "KeychainItemWrapper.h"
+#import "OSHomeViewController.h"
 
 @implementation OSLoginViewController
 
@@ -53,7 +54,12 @@
         [keychain setObject:key forKey:(__bridge NSString *)kSecValueData];
         
         
-        [self dismissViewControllerAnimated:TRUE completion:nil];
+        [self dismissViewControllerAnimated:TRUE completion:^{
+            UIViewController *pvc = self.presentingViewController;
+            if ([pvc respondsToSelector:@selector(updateAfterLogin)]) {
+                [pvc performSelector:@selector(updateAfterLogin)];
+            }
+        }];
     }
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = FALSE;

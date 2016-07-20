@@ -22,7 +22,7 @@
                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
                     </textAttributes>
                     <items>
-                        <navigationItem title="Please login" id="cGf-XW-sSD">
+                        <navigationItem title="Login to openSNP" id="cGf-XW-sSD">
                             <barButtonItem key="leftBarButtonItem" image="backspace.png" id="VNW-dL-Syr">
                                 <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>

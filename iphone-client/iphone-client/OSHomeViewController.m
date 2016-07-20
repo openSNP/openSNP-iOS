@@ -23,7 +23,6 @@ typedef enum : NSInteger {
     OSCellActionLogin = 0
 } OSCellAction;
 @end
-
 @implementation OSHomeViewController
 
 - (void)viewDidLoad {
@@ -55,9 +54,14 @@ typedef enum : NSInteger {
     [super didReceiveMemoryWarning];
 }
 
-- (NSString *)userId {
+
+- (NSString *)getUserId {
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
     return [keychain objectForKey:(__bridge NSString *)kSecValueData];
+}
+
+- (BOOL)userExists {
+    return [self getUserId] != nil;
 }
 
 
@@ -75,13 +79,11 @@ typedef enum : NSInteger {
 
 - (void)displayLoginAction {
     [_cellData removeAllObjects];
-    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"※ Please login with openSNP" actionId:OSCellActionLogin];
+    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Please login —" actionId:OSCellActionLogin];
     [self serveItem:actionItem];
 }
 
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+- (void)requestHealthAccess {
     if ([HKHealthStore isHealthDataAvailable]) {
         NSSet *readDataTypes = [self dataTypesToRead];
         
@@ -92,16 +94,21 @@ typedef enum : NSInteger {
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                //if (![[NSUserDefaults standardUserDefaults] boolForKey:AUTHENTICATED_DEFAULT_KEY]) {
-                //    // user hasn't authenticated
-                //    [self displayLoginAction];
-                //    
-                //}
+                if ([self userExists]) {
+                    // user hasn't authenticated
+                    [self displayLoginAction];
+                }
             });
         }];
     } else {
         [self displayError:@"Health data isn't available on this device!"];
     }
+}
+
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self requestHealthAccess];
 }
 
 
@@ -222,21 +229,29 @@ typedef enum : NSInteger {
 }
 
 
-
 #pragma mark Transitions 
 
 - (void)viewSettings {
     // TODO
 }
+
 - (void)presentLogin {
     OSLoginViewController *loginVC = [[OSLoginViewController alloc] initWithURLString:LOGIN_URL];
     [self presentViewController:loginVC animated:YES completion:nil];
 }
 
+
+
 #pragma mark Connections
 - (void)updateFeed {
     // TODO
 }
+
+- (void)updateAfterLogin {
+    [_cellData removeAllObjects];
+    [self updateFeed];
+}
+
 
 
 @end

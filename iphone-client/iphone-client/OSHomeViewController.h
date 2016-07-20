@@ -13,5 +13,7 @@
 @property (nonatomic) HKHealthStore *healthStore;
 
 - (NSSet *)dataTypesToRead;
+- (void)updateAfterLogin;
+
 @end
 
