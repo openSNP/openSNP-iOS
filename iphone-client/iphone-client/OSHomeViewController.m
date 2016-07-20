@@ -13,9 +13,8 @@
 #import "OSHealthPair.h"
 #import "NSArray+OSFunctionalMap.h"
 #import "OSLoginViewController.h"
+#import "OSConstants.h"
 
-#define LOGIN_URL @"https://opensnp.2pitau.org/login"
-#define AUTHENTICATED_DEFAULT_KEY @"user_has_authenticated"
 
 @interface OSHomeViewController ()
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;

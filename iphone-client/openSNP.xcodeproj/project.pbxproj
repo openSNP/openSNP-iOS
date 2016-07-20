@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		152D096D1D3FC8FB00AC41D1 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 152D096C1D3FC8FB00AC41D1 /* HealthKit.framework */; };
 		1543B3991D33496B00FECE7A /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 1543B3981D33496B00FECE7A /* settings.png */; };
 		1543B39C1D33A0F300FECE7A /* stop_sign.png in Resources */ = {isa = PBXBuildFile; fileRef = 1543B39A1D33A0F300FECE7A /* stop_sign.png */; };
 		1543B39D1D33A0F300FECE7A /* stop_sign@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1543B39B1D33A0F300FECE7A /* stop_sign@2x.png */; };
@@ -59,6 +60,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		152D096C1D3FC8FB00AC41D1 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		152D09721D3FCAF000AC41D1 /* OSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSConstants.h; sourceTree = "<group>"; };
 		1543B3981D33496B00FECE7A /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings.png; sourceTree = "<group>"; };
 		1543B39A1D33A0F300FECE7A /* stop_sign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_sign.png; sourceTree = "<group>"; };
 		1543B39B1D33A0F300FECE7A /* stop_sign@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop_sign@2x.png"; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1565FCA11D3E739A005AE11A /* Security.framework in Frameworks */,
+				152D096D1D3FC8FB00AC41D1 /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +185,7 @@
 		158288BC1D0FA50500798ECA = {
 			isa = PBXGroup;
 			children = (
+				152D096C1D3FC8FB00AC41D1 /* HealthKit.framework */,
 				1565FCA01D3E739A005AE11A /* Security.framework */,
 				158288C71D0FA50500798ECA /* iphone-client */,
 				158288E11D0FA50500798ECA /* iphone-clientTests */,
@@ -205,6 +210,7 @@
 				1582890D1D0FA84100798ECA /* iphone-client.entitlements */,
 				158288CB1D0FA50500798ECA /* OSAppDelegate.h */,
 				158288CC1D0FA50500798ECA /* OSAppDelegate.m */,
+				152D09721D3FCAF000AC41D1 /* OSConstants.h */,
 				154CBF1B1D3A7AE300FBBD17 /* vc */,
 				154CBF1A1D3A7AD000FBBD17 /* helpers */,
 				157EAB9F1D3E070A00553D28 /* interface */,
@@ -331,6 +337,7 @@
 				TargetAttributes = {
 					158288C41D0FA50500798ECA = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = MPL73MAT8L;
 						SystemCapabilities = {
 							com.apple.HealthKit = {
 								enabled = 1;

@@ -7,6 +7,7 @@
 //
 
 #import "OSLoginViewController.h"
+#import "OSConstants.h"
 
 @implementation OSLoginViewController
 
@@ -34,16 +35,26 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+
 #pragma mark webview delegate methods
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = TRUE;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    NSCachedURLResponse *resp = [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request];
+    NSDictionary *headers = [(NSHTTPURLResponse*)resp.response allHeaderFields];
+    NSString *key;
+    if ([[webView request].URL.absoluteString isEqualToString:LOGIN_URL] && (key = [headers objectForKey:@"KEY"]) != NULL) {
+        [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:AUTHENTICATED_DEFAULT_KEY];
+        
+        // TODO: store key in keychain
+        
+        [self dismissViewControllerAnimated:TRUE completion:nil];
+    }
+    
     [UIApplication sharedApplication].networkActivityIndicatorVisible = FALSE;
 }
-
-
 
 
 @end
