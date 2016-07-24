@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		152D096D1D3FC8FB00AC41D1 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 152D096C1D3FC8FB00AC41D1 /* HealthKit.framework */; };
+		152D09771D3FF8EA00AC41D1 /* OSSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152D09761D3FF8EA00AC41D1 /* OSSettingsViewController.m */; };
 		1543B3991D33496B00FECE7A /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 1543B3981D33496B00FECE7A /* settings.png */; };
 		1543B39C1D33A0F300FECE7A /* stop_sign.png in Resources */ = {isa = PBXBuildFile; fileRef = 1543B39A1D33A0F300FECE7A /* stop_sign.png */; };
 		1543B39D1D33A0F300FECE7A /* stop_sign@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1543B39B1D33A0F300FECE7A /* stop_sign@2x.png */; };
@@ -62,6 +63,8 @@
 /* Begin PBXFileReference section */
 		152D096C1D3FC8FB00AC41D1 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		152D09721D3FCAF000AC41D1 /* OSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSConstants.h; sourceTree = "<group>"; };
+		152D09751D3FF8EA00AC41D1 /* OSSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSettingsViewController.h; sourceTree = "<group>"; };
+		152D09761D3FF8EA00AC41D1 /* OSSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSSettingsViewController.m; sourceTree = "<group>"; };
 		1543B3981D33496B00FECE7A /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings.png; sourceTree = "<group>"; };
 		1543B39A1D33A0F300FECE7A /* stop_sign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_sign.png; sourceTree = "<group>"; };
 		1543B39B1D33A0F300FECE7A /* stop_sign@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop_sign@2x.png"; sourceTree = "<group>"; };
@@ -166,6 +169,8 @@
 			children = (
 				158288CE1D0FA50500798ECA /* OSHomeViewController.h */,
 				158288CF1D0FA50500798ECA /* OSHomeViewController.m */,
+				152D09751D3FF8EA00AC41D1 /* OSSettingsViewController.h */,
+				152D09761D3FF8EA00AC41D1 /* OSSettingsViewController.m */,
 				1565FCA51D3E76C5005AE11A /* OSLoginViewController.h */,
 				1565FCA61D3E76C5005AE11A /* OSLoginViewController.m */,
 			);
@@ -424,6 +429,7 @@
 				158288D01D0FA50500798ECA /* OSHomeViewController.m in Sources */,
 				154CBF191D3A7A1A00FBBD17 /* OSHealthPair.m in Sources */,
 				157EAB9E1D3E06F300553D28 /* NSArray+OSFunctionalMap.m in Sources */,
+				152D09771D3FF8EA00AC41D1 /* OSSettingsViewController.m in Sources */,
 				156363851D29D9A700567EDB /* OSInfoTableViewCell.m in Sources */,
 				154CBF161D3A655500FBBD17 /* HKHealthStore+OSExtensions.m in Sources */,
 				158288CD1D0FA50500798ECA /* OSAppDelegate.m in Sources */,

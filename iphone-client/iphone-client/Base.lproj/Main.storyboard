@@ -104,12 +104,38 @@
                             <outlet property="delegate" destination="CBR-F1-uca" id="8gh-d0-eFe"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="kbu-5s-HM0"/>
+                    <navigationItem key="navigationItem" id="kbu-5s-HM0">
+                        <barButtonItem key="backBarButtonItem" title="feed" id="WfT-nh-rfY"/>
+                        <barButtonItem key="rightBarButtonItem" image="settings.png" id="6pI-Ou-Ibz">
+                            <connections>
+                                <segue destination="vQa-Ni-fmz" kind="show" id="ugr-Im-LHr"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="atL-dn-mr2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="195" y="33"/>
+            <point key="canvasLocation" x="189" y="61"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="rTd-iQ-Z1h">
+            <objects>
+                <viewController id="vQa-Ni-fmz" customClass="OSSettingsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hOQ-uA-VEN"/>
+                        <viewControllerLayoutGuide type="bottom" id="vng-n5-TVb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fvM-SW-59l">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9kg-a0-N42" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="724" y="-334"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="pDn-6Z-fXg">
@@ -131,5 +157,6 @@
     </scenes>
     <resources>
         <image name="clock_grey.png" width="25" height="25"/>
+        <image name="settings.png" width="25" height="25"/>
     </resources>
 </document>

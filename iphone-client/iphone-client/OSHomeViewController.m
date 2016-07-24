@@ -23,6 +23,7 @@ typedef enum : NSInteger {
     OSCellActionLogin = 0
 } OSCellAction;
 @end
+
 @implementation OSHomeViewController
 
 - (void)viewDidLoad {
@@ -42,9 +43,6 @@ typedef enum : NSInteger {
     
     self.navigationItem.title = @"openSNP";
     
-    UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings.png"] style:UIBarButtonItemStyleDone target:self action:@selector(viewSettings)];
-    self.navigationItem.rightBarButtonItem = settings;
-    
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(updateFeed) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
@@ -55,13 +53,13 @@ typedef enum : NSInteger {
 }
 
 
-- (NSString *)getUserId {
+- (NSString *)getUUID {
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
     return [keychain objectForKey:(__bridge NSString *)kSecValueData];
 }
 
 - (BOOL)userExists {
-    return [self getUserId] != nil;
+    return [self getUUID] != nil;
 }
 
 
@@ -143,7 +141,9 @@ typedef enum : NSInteger {
               @[HKQuantityTypeIdentifierRespiratoryRate, [HKUnit unitFromString:@"count/min"]],
               @[HKQuantityTypeIdentifierOxygenSaturation, [HKUnit percentUnit]],
               @[HKQuantityTypeIdentifierPeripheralPerfusionIndex, [HKUnit percentUnit]],
-              @[HKQuantityTypeIdentifierBloodGlucose, [[HKUnit moleUnitWithMetricPrefix:HKMetricPrefixMilli molarMass:HKUnitMolarMassBloodGlucose] unitDividedByUnit:[HKUnit literUnit]]],
+              @[HKQuantityTypeIdentifierBloodGlucose, [[HKUnit moleUnitWithMetricPrefix:HKMetricPrefixMilli
+                                                                              molarMass:HKUnitMolarMassBloodGlucose]
+                                                       unitDividedByUnit:[HKUnit literUnit]]],
               @[HKQuantityTypeIdentifierNumberOfTimesFallen, [HKUnit countUnit]],
               @[HKQuantityTypeIdentifierElectrodermalActivity, [HKUnit siemenUnit]],
               @[HKQuantityTypeIdentifierBloodAlcoholContent, [HKUnit percentUnit]],
@@ -231,20 +231,34 @@ typedef enum : NSInteger {
 
 #pragma mark Transitions 
 
-- (void)viewSettings {
-    // TODO
-}
-
 - (void)presentLogin {
     OSLoginViewController *loginVC = [[OSLoginViewController alloc] initWithURLString:LOGIN_URL];
     [self presentViewController:loginVC animated:YES completion:nil];
 }
 
 
-
 #pragma mark Connections
 - (void)updateFeed {
-    // TODO
+    if (![self userExists]) {
+        [self displayLoginAction];
+        [self.refreshControl endRefreshing];
+        return;
+    }
+    
+    NSMutableURLRequest *feedRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:FEED_URL]];
+    // set the user's key in the request header
+    [feedRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
+    
+    [[[NSURLSession sharedSession] dataTaskWithRequest:feedRequest
+                                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                         if (!error) {
+                                             NSError *jsonError = nil;
+                                             NSDictionary *respDict = [NSJSONSerialization JSONObjectWithData:data
+                                                                                                      options:kNilOptions
+                                                                                                        error:&jsonError];
+                                         }
+                                     }] resume];
+    [self.refreshControl endRefreshing];
 }
 
 - (void)updateAfterLogin {

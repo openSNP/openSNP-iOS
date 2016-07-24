@@ -9,7 +9,7 @@
 @import UIKit;
 @import HealthKit;
 
-@interface OSHomeViewController : UITableViewController
+@interface OSHomeViewController : UITableViewController <NSURLConnectionDelegate>
 @property (nonatomic) HKHealthStore *healthStore;
 
 - (NSSet *)dataTypesToRead;

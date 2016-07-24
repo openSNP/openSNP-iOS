@@ -9,6 +9,8 @@
 #ifndef OPENSNP_CONSTANTS
 #define OPENSNP_CONSTANTS TRUE
 #define LOGIN_URL @"https://opensnp.2pitau.org/login"
-//#define AUTHENTICATED_DEFAULT_KEY @"user_has_authenticated"
+#define FEED_URL @"https://opensnp.2pitau.org/feed"
+#define KEY_HTTP_HEADER_KEY @"KEY"
+#define EMAIL_HTTP_HEADER_KEY @"EMAIL"
 #define KEYCHAIN_ID @"openSNP"
 #endif

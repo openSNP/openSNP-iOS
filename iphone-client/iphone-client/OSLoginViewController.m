@@ -46,12 +46,15 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     NSCachedURLResponse *resp = [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request];
     NSDictionary *headers = [(NSHTTPURLResponse*)resp.response allHeaderFields];
-    NSString *key;
-    if ([[webView request].URL.absoluteString isEqualToString:LOGIN_URL] && (key = [headers objectForKey:@"KEY"]) != NULL) {
-        // store the user's uuid in their keychain
+    NSString *key, *email;
+    if ([[webView request].URL.absoluteString isEqualToString:LOGIN_URL] && ((key = headers[KEY_HTTP_HEADER_KEY]) != NULL) && (email = headers[EMAIL_HTTP_HEADER_KEY])) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
         [keychain setObject:(__bridge NSString *)kSecAttrAccessibleWhenUnlocked forKey:(__bridge NSString *)kSecAttrAccessible];
+        
+        // store the user's uuid in their keychain
         [keychain setObject:key forKey:(__bridge NSString *)kSecValueData];
+        // " " " email " " "
+        [keychain setObject:email forKey:(__bridge NSString *)kSecAttrAccount];
         
         
         [self dismissViewControllerAnimated:TRUE completion:^{
