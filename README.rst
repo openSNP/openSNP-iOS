@@ -34,5 +34,5 @@ From ``openSNP.org``
 
 
 
-.. _Issues: issues/new?labels=enhancement
+.. _Issues: https://github.com/SXibolet/openSNP-iOS/issues/new?labels=enhancement
 .. _the genotyping you provided on openSNP.org: https://opensnp.org/genotypes/new#new_genotype

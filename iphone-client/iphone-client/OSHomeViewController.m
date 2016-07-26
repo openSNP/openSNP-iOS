@@ -306,8 +306,8 @@ typedef enum : NSInteger {
 
 - (void)getPairAverage:(OSHealthPair *)pair {
     NSDate *now = [NSDate date];
-    // TODO: allow customization of this 5 hour span
-    NSDate *hoursAgo = [NSDate dateWithTimeInterval:-60*60*5 sinceDate:[NSDate date]];
+    // TODO: allow customization of this span
+    NSDate *hoursAgo = [NSDate dateWithTimeInterval:-60*60*24*7 sinceDate:[NSDate date]];
     NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate:hoursAgo endDate:now options:HKQueryOptionStrictStartDate];
     
     HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:pair.type quantitySamplePredicate:predicate options:HKStatisticsOptionNone completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
