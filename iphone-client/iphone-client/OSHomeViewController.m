@@ -68,6 +68,8 @@ typedef enum : NSInteger {
     [self.tableView reloadData];
 }
 
+
+// displays a non-actionable error item
 - (void)displayError:(NSString *)message {
     [_cellData removeAllObjects];
     OSFeedItem *errorItem = [[OSFeedItem alloc] initWithBody:message date:[NSDate date] imageName:@"exclamation_mark.png"];
@@ -81,20 +83,23 @@ typedef enum : NSInteger {
     [self serveItem:actionItem];
 }
 
+
 - (void)requestHealthAccess {
     if ([HKHealthStore isHealthDataAvailable]) {
         NSSet *readDataTypes = [self dataTypesToRead];
         
         [self.healthStore requestAuthorizationToShareTypes:NULL readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
             if (!success) {
-                [self displayError:@"Problem getting Health data!"];
+                [self displayError:@"There was a problem getting Health data!"];
                 return;
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([self userExists]) {
+                if (![self userExists]) {
                     // user hasn't authenticated
                     [self displayLoginAction];
+                } else {
+                    [self updateFeed];
                 }
             });
         }];
@@ -230,7 +235,6 @@ typedef enum : NSInteger {
 
 
 #pragma mark Transitions 
-
 - (void)presentLogin {
     OSLoginViewController *loginVC = [[OSLoginViewController alloc] initWithURLString:LOGIN_URL];
     [self presentViewController:loginVC animated:YES completion:nil];
@@ -238,26 +242,53 @@ typedef enum : NSInteger {
 
 
 #pragma mark Connections
+- (void)updateFeedFromDictionary:(NSDictionary *)respDict {
+    if ([respDict[@"error"] integerValue] == 1) {
+        // TODO: show an action cell allowing a refresh or contacting us
+    } else {
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        for (NSDictionary *event in respDict[@"message"]) {
+            OSFeedItem *item = [[OSFeedItem alloc] initWithBody:event[@"message"]
+                                                           date:[dateFormatter dateFromString:event[@"ts"]]
+                                                      imageName:event[@"image"]];
+            [_cellData addObject:item];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }
+    
+}
 - (void)updateFeed {
     if (![self userExists]) {
         [self displayLoginAction];
-        [self.refreshControl endRefreshing];
-        return;
+    } else {
+        NSMutableURLRequest *feedRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:FEED_URL]];
+        // set the user's key in the request header
+        [feedRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
+        
+        [[[NSURLSession sharedSession] dataTaskWithRequest:feedRequest
+                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                             [_cellData removeAllObjects];
+                                             
+                                             if (!error) {
+                                                 NSError *jsonError = nil;
+                                                 NSDictionary *respDict = [NSJSONSerialization JSONObjectWithData:data
+                                                                                                          options:kNilOptions
+                                                                                                            error:&jsonError];
+                                                 if (jsonError) {
+                                                     // TODO: ask user to file a bug report
+                                                 } else {
+                                                     [self updateFeedFromDictionary:respDict];
+                                                 }
+                                             } else {
+                                                 // TODO: handle connection error (prompt to retry)
+                                             }
+                                         }] resume];
     }
     
-    NSMutableURLRequest *feedRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:FEED_URL]];
-    // set the user's key in the request header
-    [feedRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
-    
-    [[[NSURLSession sharedSession] dataTaskWithRequest:feedRequest
-                                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                         if (!error) {
-                                             NSError *jsonError = nil;
-                                             NSDictionary *respDict = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                      options:kNilOptions
-                                                                                                        error:&jsonError];
-                                         }
-                                     }] resume];
     [self.refreshControl endRefreshing];
 }
 
@@ -266,6 +297,28 @@ typedef enum : NSInteger {
     [self updateFeed];
 }
 
+- (void)performUpload {
+    // TODO
+}
 
+
+#pragma mark Health queries
+
+- (void)getPairAverage:(OSHealthPair *)pair {
+    NSDate *now = [NSDate date];
+    // TODO: allow customization of this 5 hour span
+    NSDate *hoursAgo = [NSDate dateWithTimeInterval:-60*60*5 sinceDate:[NSDate date]];
+    NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate:hoursAgo endDate:now options:HKQueryOptionStrictStartDate];
+    
+    HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:pair.type quantitySamplePredicate:predicate options:HKStatisticsOptionNone completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                HKQuantity *quantity = result.averageQuantity;
+                double d_value = [quantity doubleValueForUnit:pair.unit];
+                // TODO: send d_value to a callback
+            });
+    }];
+    [self.healthStore executeQuery:query];
+
+}
 
 @end

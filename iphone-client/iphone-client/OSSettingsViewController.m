@@ -9,11 +9,16 @@
 #import "OSSettingsViewController.h"
 
 @implementation OSSettingsViewController
+/*
+ TODO
+ - stop uploads
+ - delete data
+ */
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"Settings";
+    self.navigationItem.title = @"settings";
 }
 
 @end
