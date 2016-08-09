@@ -21,6 +21,7 @@
 @interface OSHomeViewController ()
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
 @property (strong, nonatomic) NSMutableArray *toUpload;
+@property (nonatomic, strong) NSURLSession *session;
 typedef enum : NSInteger {
     OSCellActionLogin = 0
 } OSCellAction;
@@ -50,6 +51,10 @@ typedef enum : NSInteger {
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(updateFeed) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
+    
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    sessionConfig.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    self.session = [NSURLSession sessionWithConfiguration:sessionConfig];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -57,6 +62,7 @@ typedef enum : NSInteger {
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    NSLog(@"%@", _cellData);
     if ([segue.identifier isEqualToString:@"systemMessage"]) {
         OSFeedItem *selectedCell = _cellData[[[self tableView] indexPathForSelectedRow].row];
         if (selectedCell.cellClass == [OSInfoTableViewCell class]) {
@@ -65,10 +71,12 @@ typedef enum : NSInteger {
     }
 }
 
+- (KeychainItemWrapper *)getKeychain {
+    return [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
+}
 
 - (NSString *)getUUID {
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
-    return [keychain objectForKey:(__bridge NSString *)kSecValueData];
+    return [[self getKeychain] objectForKey:(__bridge NSString *)kSecValueData];
 }
 
 - (BOOL)userExists {
@@ -270,11 +278,10 @@ typedef enum : NSInteger {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
-        
-        [self performUpload];
     }
     
 }
+
 - (void)updateFeed {
     if (![self userExists]) {
         [self displayLoginAction];
@@ -283,24 +290,25 @@ typedef enum : NSInteger {
         // set the user's key in the request header
         [feedRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
         
-        [[[NSURLSession sharedSession] dataTaskWithRequest:feedRequest
-                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                             [_cellData removeAllObjects];
-                                             
-                                             if (!error) {
-                                                 NSError *jsonError = nil;
-                                                 NSDictionary *respDict = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                          options:kNilOptions
-                                                                                                            error:&jsonError];
-                                                 if (jsonError) {
-                                                     // TODO: ask user to file a bug report
-                                                 } else {
-                                                     [self updateFeedFromDictionary:respDict];
-                                                 }
-                                             } else {
-                                                 // TODO: handle connection error (prompt to retry)
-                                             }
-                                         }] resume];
+        
+        [[_session dataTaskWithRequest:feedRequest
+                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                         [_cellData removeAllObjects];
+                         
+                         if (!error) {
+                             NSError *jsonError = nil;
+                             NSDictionary *respDict = [NSJSONSerialization JSONObjectWithData:data
+                                                                                      options:kNilOptions
+                                                                                        error:&jsonError];
+                             if (jsonError) {
+                                 // TODO: ask user to file a bug report
+                             } else {
+                                 [self updateFeedFromDictionary:respDict];
+                             }
+                         } else {
+                             // TODO: handle connection error (prompt to retry)
+                         }
+                     }] resume];
     }
     
     [self.refreshControl endRefreshing];
@@ -312,16 +320,36 @@ typedef enum : NSInteger {
 }
 
 - (void)performUpload {
+    _toUpload = [NSMutableArray array];
+    
     for (OSHealthPair *p in [self dataTypesAndUnits]) {
         [self getPairAverage:p];
     }
+    
+    // wait until all threads finish their query
+    while (_toUpload.count < [self dataTypesAndUnits].count) {}
     
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_toUpload
                                                        options:0
                                                          error:&error];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:UPLOAD_URL];
-
+    NSMutableURLRequest *uploadRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:UPLOAD_URL]];
+    [uploadRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [uploadRequest setHTTPMethod:@"POST"];
+    [uploadRequest setHTTPBody:jsonData];
+    
+    [uploadRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
+    NSString *email = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
+    [uploadRequest setValue:email forHTTPHeaderField:EMAIL_HTTP_HEADER_KEY];
+    
+    [[_session dataTaskWithRequest:uploadRequest
+                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                     [_cellData removeAllObjects];
+                     
+                     if (error) {
+                         // TODO: handle connection error (prompt to retry)
+                     }
+                 }] resume];
 }
 
 
@@ -339,14 +367,12 @@ typedef enum : NSInteger {
                                                                        options:HKStatisticsOptionNone
                                                              completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
                                                                  // wait for main thread
-                                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                                     HKQuantity *quantity = result.averageQuantity;
-                                                                     CGFloat d_value = [quantity doubleValueForUnit:pair.unit];
-                                                                     [_toUpload addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                           [NSNumber numberWithFloat:d_value], @"value",
-                                                                                           [NSString stringWithFormat:@"%@", pair.type], @"type",
-                                                                                           nil]];
-                                                                 });
+                                                                 HKQuantity *quantity = result.averageQuantity;
+                                                                 CGFloat d_value = [quantity doubleValueForUnit:pair.unit];
+                                                                 [_toUpload addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                       [NSNumber numberWithFloat:d_value], @"value",
+                                                                                       [NSString stringWithFormat:@"%@", pair.type], @"type",
+                                                                                       nil]];
                                                              }];
     [self.healthStore executeQuery:query];
 

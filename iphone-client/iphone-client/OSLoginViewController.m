@@ -53,7 +53,7 @@
         
         // store the user's uuid in their keychain
         [keychain setObject:key forKey:(__bridge NSString *)kSecValueData];
-        // " " " email " " "
+        // store the user's email in their keychain
         [keychain setObject:email forKey:(__bridge NSString *)kSecAttrAccount];
         
         

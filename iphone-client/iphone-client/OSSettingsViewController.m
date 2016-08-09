@@ -42,6 +42,7 @@
     [logoutAlert addAction:confirm];
     
     [self presentViewController:logoutAlert animated:YES completion:^{
+        // TODO: update HomeVC's feed
     }];
 }
 
