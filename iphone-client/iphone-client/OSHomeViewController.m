@@ -315,12 +315,20 @@ typedef enum : NSInteger {
     for (OSHealthPair *p in [self dataTypesAndUnits]) {
         [self getPairAverage:p];
     }
+    
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_toUpload
+                                                       options:0
+                                                         error:&error];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:UPLOAD_URL];
+
 }
 
 
 #pragma mark Health queries
 
 - (void)getPairAverage:(OSHealthPair *)pair {
+    // find the average of the type of ``pair`` above some time
     NSDate *end = [NSDate date];
     // TODO: allow customization of this span
     NSDate *start = [NSDate dateWithTimeInterval:-60*60*24*7 sinceDate:end];
@@ -330,11 +338,14 @@ typedef enum : NSInteger {
                                                        quantitySamplePredicate:predicate
                                                                        options:HKStatisticsOptionNone
                                                              completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
+                                                                 // wait for main thread
                                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                                      HKQuantity *quantity = result.averageQuantity;
-                                                                     double d_value = [quantity doubleValueForUnit:pair.unit];
-                                                                     NSLog(@"%f", d_value);
-                                                                     
+                                                                     CGFloat d_value = [quantity doubleValueForUnit:pair.unit];
+                                                                     [_toUpload addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                           [NSNumber numberWithFloat:d_value], @"value",
+                                                                                           [NSString stringWithFormat:@"%@", pair.type], @"type",
+                                                                                           nil]];
                                                                  });
                                                              }];
     [self.healthStore executeQuery:query];

@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface OSSettingsViewController : UIViewController
+@property (weak) IBOutlet UIButton *logoutButton;
 - (IBAction)logout:(id)sender;
+
 @end

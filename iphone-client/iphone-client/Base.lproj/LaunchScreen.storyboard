@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -23,8 +23,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="dym-5r-ewa" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="0JO-XP-2XX"/>
-                            <constraint firstItem="dym-5r-ewa" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="QfF-Bz-eIL"/>
+                            <constraint firstItem="dym-5r-ewa" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="sWO-W7-1E4"/>
+                            <constraint firstItem="dym-5r-ewa" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="wyY-XY-38j"/>
                         </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
