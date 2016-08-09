@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface OSSettingsViewController : UIViewController
-
+- (IBAction)logout:(id)sender;
 @end

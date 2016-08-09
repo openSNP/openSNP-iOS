@@ -47,6 +47,7 @@
 		158288D81D0FA50500798ECA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 158288D61D0FA50500798ECA /* LaunchScreen.storyboard */; };
 		158288E31D0FA50500798ECA /* iphone_clientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 158288E21D0FA50500798ECA /* iphone_clientTests.m */; };
 		158288EE1D0FA50500798ECA /* iphone_clientUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 158288ED1D0FA50500798ECA /* iphone_clientUITests.m */; };
+		15A861911D59A87C0089C7EF /* OSSystemMessageViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A861901D59A87C0089C7EF /* OSSystemMessageViewer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,8 @@
 		158288ED1D0FA50500798ECA /* iphone_clientUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iphone_clientUITests.m; sourceTree = "<group>"; };
 		158288EF1D0FA50500798ECA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1582890D1D0FA84100798ECA /* iphone-client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "iphone-client.entitlements"; sourceTree = "<group>"; };
+		15A8618F1D59A87C0089C7EF /* OSSystemMessageViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSSystemMessageViewer.h; sourceTree = "<group>"; };
+		15A861901D59A87C0089C7EF /* OSSystemMessageViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSSystemMessageViewer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +184,8 @@
 			children = (
 				158288CE1D0FA50500798ECA /* OSHomeViewController.h */,
 				158288CF1D0FA50500798ECA /* OSHomeViewController.m */,
+				15A8618F1D59A87C0089C7EF /* OSSystemMessageViewer.h */,
+				15A861901D59A87C0089C7EF /* OSSystemMessageViewer.m */,
 				152D09751D3FF8EA00AC41D1 /* OSSettingsViewController.h */,
 				152D09761D3FF8EA00AC41D1 /* OSSettingsViewController.m */,
 				1565FCA51D3E76C5005AE11A /* OSLoginViewController.h */,
@@ -451,6 +456,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				158288D01D0FA50500798ECA /* OSHomeViewController.m in Sources */,
+				15A861911D59A87C0089C7EF /* OSSystemMessageViewer.m in Sources */,
 				154CBF191D3A7A1A00FBBD17 /* OSHealthPair.m in Sources */,
 				157EAB9E1D3E06F300553D28 /* NSArray+OSFunctionalMap.m in Sources */,
 				152D09771D3FF8EA00AC41D1 /* OSSettingsViewController.m in Sources */,

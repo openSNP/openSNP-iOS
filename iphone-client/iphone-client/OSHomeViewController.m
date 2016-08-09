@@ -8,6 +8,7 @@
 
 #import "OSHomeViewController.h"
 #import "OSInfoTableViewCell.h"
+#import "OSSystemMessageViewer.h"
 #import "OSActionTableViewCell.h"
 #import "OSFeedItem.h"
 #import "OSHealthPair.h"
@@ -19,6 +20,7 @@
 
 @interface OSHomeViewController ()
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
+@property (strong, nonatomic) NSMutableArray *toUpload;
 typedef enum : NSInteger {
     OSCellActionLogin = 0
 } OSCellAction;
@@ -43,6 +45,8 @@ typedef enum : NSInteger {
     
     self.navigationItem.title = @"openSNP";
     
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(updateFeed) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
@@ -50,6 +54,15 @@ typedef enum : NSInteger {
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"systemMessage"]) {
+        OSFeedItem *selectedCell = _cellData[[[self tableView] indexPathForSelectedRow].row];
+        if (selectedCell.cellClass == [OSInfoTableViewCell class]) {
+            [(OSSystemMessageViewer *)segue.destinationViewController setMessageText:selectedCell.body];
+        }
+    }
 }
 
 
@@ -61,7 +74,6 @@ typedef enum : NSInteger {
 - (BOOL)userExists {
     return [self getUUID] != nil;
 }
-
 
 - (void)serveItem:(OSFeedItem *)item {
     [_cellData addObject:item];
@@ -258,6 +270,8 @@ typedef enum : NSInteger {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
+        
+        [self performUpload];
     }
     
 }
@@ -298,7 +312,9 @@ typedef enum : NSInteger {
 }
 
 - (void)performUpload {
-    // TODO
+    for (OSHealthPair *p in [self dataTypesAndUnits]) {
+        [self getPairAverage:p];
+    }
 }
 
 
@@ -310,13 +326,17 @@ typedef enum : NSInteger {
     NSDate *start = [NSDate dateWithTimeInterval:-60*60*24*7 sinceDate:end];
     NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate:start endDate:end options:HKQueryOptionStrictStartDate];
     
-    HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:pair.type quantitySamplePredicate:predicate options:HKStatisticsOptionNone completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                HKQuantity *quantity = result.averageQuantity;
-                double d_value = [quantity doubleValueForUnit:pair.unit];
-                // TODO: send d_value to a callback
-            });
-    }];
+    HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:pair.type
+                                                       quantitySamplePredicate:predicate
+                                                                       options:HKStatisticsOptionNone
+                                                             completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
+                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                     HKQuantity *quantity = result.averageQuantity;
+                                                                     double d_value = [quantity doubleValueForUnit:pair.unit];
+                                                                     NSLog(@"%f", d_value);
+                                                                     
+                                                                 });
+                                                             }];
     [self.healthStore executeQuery:query];
 
 }

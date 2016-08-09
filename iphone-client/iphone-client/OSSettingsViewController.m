@@ -7,18 +7,21 @@
 //
 
 #import "OSSettingsViewController.h"
+#import "OSFeedItem.h"
+#import "OSActionTableViewCell.h"
+
 
 @implementation OSSettingsViewController
-/*
- TODO
- - stop uploads
- - delete data
- */
+// TODO: delete data from server
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.navigationItem.title = @"settings";
 }
+
+- (IBAction)logout:(id)sender {
+    
+}
+
 
 @end

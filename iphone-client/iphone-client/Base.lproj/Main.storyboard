@@ -14,7 +14,7 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="separatorColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="separatorColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="infoCell" rowHeight="68" id="58E-4U-GX4" customClass="OSInfoTableViewCell">
@@ -71,6 +71,7 @@
                                     <outlet property="articleBody" destination="2An-vg-VLl" id="CiE-PB-CRI"/>
                                     <outlet property="dateTag" destination="W6G-Io-6bJ" id="mmS-mV-m8R"/>
                                     <outlet property="imgView" destination="yds-IJ-re5" id="M9I-eY-iyk"/>
+                                    <segue destination="R76-04-1Gs" kind="show" identifier="systemMessage" id="RVx-gI-31w"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="actionCell" id="RXX-vS-OV8" customClass="OSActionTableViewCell">
@@ -107,9 +108,7 @@
                     <navigationItem key="navigationItem" id="kbu-5s-HM0">
                         <barButtonItem key="backBarButtonItem" title="feed" id="WfT-nh-rfY"/>
                         <barButtonItem key="rightBarButtonItem" image="settings.png" id="6pI-Ou-Ibz">
-                            <connections>
-                                <segue destination="vQa-Ni-fmz" kind="show" id="ugr-Im-LHr"/>
-                            </connections>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
@@ -118,33 +117,64 @@
             </objects>
             <point key="canvasLocation" x="189" y="61"/>
         </scene>
-        <!--Settings View Controller-->
-        <scene sceneID="rTd-iQ-Z1h">
+        <!--System Message Viewer-->
+        <scene sceneID="ACo-ft-Tkk">
             <objects>
-                <viewController id="vQa-Ni-fmz" customClass="OSSettingsViewController" sceneMemberID="viewController">
+                <viewController id="R76-04-1Gs" customClass="OSSystemMessageViewer" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="hOQ-uA-VEN"/>
-                        <viewControllerLayoutGuide type="bottom" id="vng-n5-TVb"/>
+                        <viewControllerLayoutGuide type="top" id="Dum-VO-DxF"/>
+                        <viewControllerLayoutGuide type="bottom" id="vte-bg-Xhw"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="fvM-SW-59l">
+                    <view key="view" contentMode="scaleToFill" id="CvH-6G-zVT">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LnZ-LA-vEz">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="message" destination="LnZ-LA-vEz" id="ca4-so-2vw"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WzR-kq-XE7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="189" y="-661"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="xhD-uz-kL0">
+            <objects>
+                <viewController id="uGR-Ml-vPB" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="bFT-NP-gVf"/>
+                        <viewControllerLayoutGuide type="bottom" id="lNi-ru-hHo"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="aoF-dG-DLj">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9kg-a0-N42" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="czQ-IC-7yB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="724" y="-334"/>
+            <point key="canvasLocation" x="662" y="-590"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="pDn-6Z-fXg">
             <objects>
                 <navigationController id="nMi-9x-vci" sceneMemberID="viewController">
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="NHO-1x-rxw">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" translucent="NO" id="NHO-1x-rxw">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.38431372549999998" green="0.59607843140000005" blue="0.76862745099999996" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="CBR-F1-uca" kind="relationship" relationship="rootViewController" id="eh9-ss-7GE"/>
