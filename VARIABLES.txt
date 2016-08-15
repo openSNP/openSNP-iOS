@@ -50,7 +50,7 @@ HK_EXTERN NSString * const HKCharacteristicTypeIdentifierFitzpatrickSkinType NS_
 
 
 
-// fetching the value for a HKCharacteristicsType subclass goes directly to enums for sex, blood, and Fitzpatrick
+// fetching the value for a HKCharacteristicsType subclass goes directly to enums for sex, blood, and Fitzpatrick.
 
 // HKCharacteristicBiologicalSex = 
 typedef enum : NSInteger {

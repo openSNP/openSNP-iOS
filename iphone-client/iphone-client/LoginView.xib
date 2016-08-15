@@ -16,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <navigationBar contentMode="scaleToFill" fixedFrame="YES" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5h0-Ky-gle">
+                <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5h0-Ky-gle">
                     <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                     <textAttributes key="titleTextAttributes">
                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
@@ -32,13 +32,22 @@
                         </navigationItem>
                     </items>
                 </navigationBar>
-                <webView contentMode="scaleToFill" fixedFrame="YES" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5SE-nz-Bai">
+                <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5SE-nz-Bai">
                     <rect key="frame" x="0.0" y="66" width="320" height="502"/>
-                    <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <dataDetectorType key="dataDetectorTypes"/>
                 </webView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="5h0-Ky-gle" secondAttribute="trailing" id="J74-ZN-gUX"/>
+                <constraint firstItem="5h0-Ky-gle" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Qgc-Oj-k62"/>
+                <constraint firstItem="5h0-Ky-gle" firstAttribute="leading" secondItem="5SE-nz-Bai" secondAttribute="leading" id="SSw-x4-DTb"/>
+                <constraint firstItem="5h0-Ky-gle" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="22" id="pDz-7g-eM5"/>
+                <constraint firstItem="5SE-nz-Bai" firstAttribute="top" secondItem="5h0-Ky-gle" secondAttribute="bottom" id="pYS-mR-htv"/>
+                <constraint firstItem="5h0-Ky-gle" firstAttribute="trailing" secondItem="5SE-nz-Bai" secondAttribute="trailing" id="wiV-14-sri"/>
+                <constraint firstAttribute="bottom" secondItem="5SE-nz-Bai" secondAttribute="bottom" id="yC2-XS-xgP"/>
+            </constraints>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
     </objects>

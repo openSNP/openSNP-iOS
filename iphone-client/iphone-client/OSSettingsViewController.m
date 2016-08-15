@@ -27,23 +27,33 @@
 
 
 - (IBAction)logout:(id)sender {
-    UIAlertController *logoutAlert = [UIAlertController alertControllerWithTitle:@"you're sure?" message:@"※ logging out will stop future uploads but won't delete previous ones stored on openSNP's servers." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *logoutAlert = [UIAlertController alertControllerWithTitle:@"You're sure?" message:@"Logging out will stop future uploads but won't delete previous ones stored on openSNP's servers." preferredStyle:UIAlertControllerStyleActionSheet];
     
-    UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"yes, logout" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+    UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"※ yes" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
-        
-        // TODO: this doesn't appear to be working...
         [keychain resetKeychainItem];
+        
+        // from Daij-Djan: https://stackoverflow.com/questions/14086085/how-to-delete-all-keychain-items-accessible-to-an-app
+        // thanks!
+        NSArray *secItemClasses = @[(__bridge id)kSecClassGenericPassword,
+                                    (__bridge id)kSecClassInternetPassword,
+                                    (__bridge id)kSecClassCertificate,
+                                    (__bridge id)kSecClassKey,
+                                    (__bridge id)kSecClassIdentity];
+        for (id secItemClass in secItemClasses) {
+            NSDictionary *spec = @{(__bridge id)kSecClass: secItemClass};
+            SecItemDelete((__bridge CFDictionaryRef)spec);
+        }
+        
+        [self.navigationController popViewControllerAnimated:true];
     }];
     
-    UIAlertAction *close = [UIAlertAction actionWithTitle:@"no, I was joking" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *close = [UIAlertAction actionWithTitle:@"※ no" style:UIAlertActionStyleCancel handler:nil];
     
     [logoutAlert addAction:close];
     [logoutAlert addAction:confirm];
     
-    [self presentViewController:logoutAlert animated:YES completion:^{
-        // TODO: update HomeVC's feed
-    }];
+    [self presentViewController:logoutAlert animated:YES completion:nil];
 }
 
 @end

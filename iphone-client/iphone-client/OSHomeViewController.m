@@ -62,7 +62,6 @@ typedef enum : NSInteger {
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    NSLog(@"%@", _cellData);
     if ([segue.identifier isEqualToString:@"systemMessage"]) {
         OSFeedItem *selectedCell = _cellData[[[self tableView] indexPathForSelectedRow].row];
         if (selectedCell.cellClass == [OSInfoTableViewCell class]) {
@@ -80,7 +79,8 @@ typedef enum : NSInteger {
 }
 
 - (BOOL)userExists {
-    return [self getUUID] != nil;
+    NSString *uuid = [self getUUID];
+    return (uuid != nil) && ([uuid length] > 0);
 }
 
 - (void)serveItem:(OSFeedItem *)item {
@@ -131,6 +131,9 @@ typedef enum : NSInteger {
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    if (![self userExists]) {
+        self.navigationItem.rightBarButtonItem.enabled = false;
+    }
     [self requestHealthAccess];
 }
 
@@ -316,6 +319,7 @@ typedef enum : NSInteger {
 
 - (void)updateAfterLogin {
     [_cellData removeAllObjects];
+    self.navigationItem.rightBarButtonItem.enabled = true;
     [self updateFeed];
 }
 
@@ -375,7 +379,6 @@ typedef enum : NSInteger {
                                                                                        nil]];
                                                              }];
     [self.healthStore executeQuery:query];
-
 }
 
 @end
