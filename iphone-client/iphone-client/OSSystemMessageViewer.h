@@ -11,4 +11,5 @@
 @interface OSSystemMessageViewer : UIViewController
 @property (weak, nonatomic) IBOutlet UITextView *message;
 @property (strong) NSString *messageText;
+@property (assign) BOOL isError;
 @end

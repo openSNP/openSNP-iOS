@@ -19,6 +19,9 @@
 @property (strong) NSString *actionDescription;
 @property (assign) NSInteger actionId;
 
+// set this to get a red background color in sys. message
+@property (assign) BOOL isError;
+
 // dateLabel and image are set by this class
 @property (strong) NSString *dateLabel;
 @property (strong) UIImage *image;

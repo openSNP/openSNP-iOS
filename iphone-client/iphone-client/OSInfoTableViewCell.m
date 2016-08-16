@@ -16,7 +16,13 @@
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:FALSE animated:TRUE];
+    [super setSelected:selected animated:animated];
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    if (highlighted) {
+        [self setBackgroundColor:[UIColor colorWithRed:193. green:220. blue:242. alpha:1.]];
+    }
 }
 
 @end

@@ -29,7 +29,7 @@
 - (IBAction)logout:(id)sender {
     UIAlertController *logoutAlert = [UIAlertController alertControllerWithTitle:@"You're sure?" message:@"Logging out will stop future uploads but won't delete previous ones stored on openSNP's servers." preferredStyle:UIAlertControllerStyleActionSheet];
     
-    UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"※ yes" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+    UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"logout" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
         [keychain resetKeychainItem];
         
@@ -48,7 +48,7 @@
         [self.navigationController popViewControllerAnimated:true];
     }];
     
-    UIAlertAction *close = [UIAlertAction actionWithTitle:@"※ no" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *close = [UIAlertAction actionWithTitle:@"※" style:UIAlertActionStyleCancel handler:nil];
     
     [logoutAlert addAction:close];
     [logoutAlert addAction:confirm];

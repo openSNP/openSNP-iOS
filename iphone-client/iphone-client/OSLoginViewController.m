@@ -58,10 +58,7 @@
         
         
         [self dismissViewControllerAnimated:TRUE completion:^{
-            UIViewController *pvc = self.presentingViewController;
-            if ([pvc respondsToSelector:@selector(updateAfterLogin)]) {
-                [pvc performSelector:@selector(updateAfterLogin)];
-            }
+            [self.presentingViewController performSelector:@selector(updateAfterLogin)];
         }];
     }
     

@@ -12,9 +12,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationItem setTitle:@"system message"];
+    [self.navigationItem setTitle:@"sys. message"];
     [self.message setText:_messageText];
     [self.message setFont:[UIFont fontWithName:@"Avenir Book" size:15.0f]];
+    
+    if (_isError) {
+        [self.message setBackgroundColor:[UIColor redColor]];
+        [self.message setFont:[UIFont fontWithName:@"Avenir-Heavy" size:15.0f]];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

@@ -42,7 +42,7 @@ typedef enum : NSInteger {
     [self.tableView setContentInset:UIEdgeInsetsMake(20, 0, 0, 0)];
     
     // set the view's background color
-    [self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+    //[self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     
     self.navigationItem.title = @"openSNP";
     
@@ -66,6 +66,7 @@ typedef enum : NSInteger {
         OSFeedItem *selectedCell = _cellData[[[self tableView] indexPathForSelectedRow].row];
         if (selectedCell.cellClass == [OSInfoTableViewCell class]) {
             [(OSSystemMessageViewer *)segue.destinationViewController setMessageText:selectedCell.body];
+            [(OSSystemMessageViewer *)segue.destinationViewController setIsError:selectedCell.isError];
         }
     }
 }
@@ -93,6 +94,7 @@ typedef enum : NSInteger {
 - (void)displayError:(NSString *)message {
     [_cellData removeAllObjects];
     OSFeedItem *errorItem = [[OSFeedItem alloc] initWithBody:message date:[NSDate date] imageName:@"exclamation_mark.png"];
+    errorItem.isError = TRUE;
     [self serveItem:errorItem];
 }
 
@@ -109,14 +111,14 @@ typedef enum : NSInteger {
         NSSet *readDataTypes = [self dataTypesToRead];
         
         [self.healthStore requestAuthorizationToShareTypes:NULL readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
-            if (!success) {
-                [self displayError:@"There was a problem getting Health data!"];
-                return;
-            }
-            
+            // view updates must occur on the main thread
             dispatch_async(dispatch_get_main_queue(), ^{
+                if (!success) {
+                    [self displayError:@"There was a problem getting Health data!"];
+                }
                 if (![self userExists]) {
                     // user hasn't authenticated
+                    self.navigationItem.rightBarButtonItem.enabled = false;
                     [self displayLoginAction];
                 } else {
                     [self updateFeed];
@@ -124,6 +126,7 @@ typedef enum : NSInteger {
             });
         }];
     } else {
+        self.navigationItem.rightBarButtonItem.enabled = false;
         [self displayError:@"Health data isn't available on this device!"];
     }
 }
@@ -131,9 +134,8 @@ typedef enum : NSInteger {
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if (![self userExists]) {
-        self.navigationItem.rightBarButtonItem.enabled = false;
-    }
+    
+    // requesting health access will call
     [self requestHealthAccess];
 }
 
@@ -304,12 +306,18 @@ typedef enum : NSInteger {
                                                                                       options:kNilOptions
                                                                                         error:&jsonError];
                              if (jsonError) {
-                                 // TODO: ask user to file a bug report
+                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                     // TODO extend error cell to include option for filing a bug report
+                                     [self displayError:[NSString stringWithFormat:@"Unable to parse JSON: %@", jsonError.localizedDescription]];
+                                 });
                              } else {
                                  [self updateFeedFromDictionary:respDict];
                              }
                          } else {
-                             // TODO: handle connection error (prompt to retry)
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 // TODO: prompt to retry
+                                 [self displayError:[NSString stringWithFormat:@"Connection error: %@", error.localizedDescription]];
+                             });
                          }
                      }] resume];
     }

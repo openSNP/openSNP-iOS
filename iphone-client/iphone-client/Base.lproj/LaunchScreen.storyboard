@@ -23,8 +23,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="dym-5r-ewa" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="sWO-W7-1E4"/>
-                            <constraint firstItem="dym-5r-ewa" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="wyY-XY-38j"/>
+                            <constraint firstItem="dym-5r-ewa" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="5d9-7e-93Y"/>
+                            <constraint firstItem="dym-5r-ewa" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="cOv-dG-SeW"/>
                         </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
