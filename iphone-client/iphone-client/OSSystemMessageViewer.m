@@ -7,8 +7,14 @@
 //
 
 #import "OSSystemMessageViewer.h"
+#import "KeychainItemWrapper.h"
+#import "OSConstants.h"
 
 @implementation OSSystemMessageViewer
+
+- (KeychainItemWrapper *)getKeychain {
+    return [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,38 +39,40 @@
 - (void)composeEmail {
     MFMailComposeViewController *composeVC = [[MFMailComposeViewController alloc] init];
     
-    composeVC.navigationBar.barTintColor = [UIColor colorWithRed:98. green:152. blue:196. alpha:1.];
-    composeVC.mailComposeDelegate = self;
+    [composeVC setMailComposeDelegate:self];
+    [[composeVC navigationBar] setTitleTextAttributes:[NSDictionary dictionaryWithObject:[UIColor blackColor] forKey:NSForegroundColorAttributeName]];
     
     [composeVC setToRecipients:@[@"gdyer@post.cz",
                                  @"info@opensnp.org"]];
     [composeVC setSubject:@"openSNP iOS bug report"];
-    [composeVC setMessageBody:_messageText isHTML:FALSE];
+    
+    NSString *accountUsername = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
+    [composeVC setMessageBody:[_messageText stringByAppendingString:
+                               [NSString stringWithFormat:@" (account: %@)", accountUsername]]
+                       isHTML:FALSE];
     
     [self presentViewController:composeVC animated:YES completion:nil];
 }
 
 - (void)reportBug {
     BOOL canSendMail = [MFMailComposeViewController canSendMail];
-    NSString *reportMessage = (canSendMail) ? @"Send us a message if you've encountered unexpected behaviour" : @"Send us an SMS if you've encountered unexpected behaviour. Note: your device can't send email, which is the default composition method. International SMS fees may now apply.";
-    NSString *composeActionTitle = (canSendMail) ? @"compose report email" : @"compose report SMS";
     
-    UIAlertController *reportAlert = [UIAlertController alertControllerWithTitle:@"Report a bug?" message:reportMessage preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController *reportAlert = [UIAlertController alertControllerWithTitle:@"Report a bug?" message:@"Send us an email if you've encounterd a bug." preferredStyle:UIAlertControllerStyleActionSheet];
     
-    UIAlertAction *reportAction = [UIAlertAction actionWithTitle:composeActionTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (canSendMail) {
+    if (canSendMail) {
+    
+        UIAlertAction *reportAction = [UIAlertAction actionWithTitle:@"compose" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 [self composeEmail];
-            } else {
-                // TODO: compose SMS
-            }
-        });
-    }];
+            });
+        }];
+        
+        [reportAlert addAction:reportAction];
+    }
     
-    UIAlertAction *close = [UIAlertAction actionWithTitle:@"※" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *close = [UIAlertAction actionWithTitle:(canSendMail) ? @"※" : @"your device can't send mail" style:UIAlertActionStyleCancel handler:nil];
     
     [reportAlert addAction:close];
-    [reportAlert addAction:reportAction];
     
     [self presentViewController:reportAlert animated:YES completion:nil];
 }

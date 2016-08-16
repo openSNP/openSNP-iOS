@@ -25,13 +25,15 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yds-IJ-re5">
-                                            <rect key="frame" x="8" y="27" width="30" height="30"/>
+                                            <rect key="frame" x="8" y="3" width="15" height="15"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="30" id="KjJ-oQ-w6Y"/>
+                                                <constraint firstAttribute="width" constant="15" id="KjJ-oQ-w6Y"/>
+                                                <constraint firstAttribute="width" constant="15" id="RIL-3e-b7P"/>
+                                                <constraint firstAttribute="height" constant="15" id="cA3-az-sqn"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="7" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2An-vg-VLl">
-                                            <rect key="frame" x="46" y="24" width="266" height="35"/>
+                                            <rect key="frame" x="8" y="24" width="304" height="35"/>
                                             <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="14"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -49,20 +51,20 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="9V8-Au-v4S" firstAttribute="top" secondItem="lpO-JV-6Gg" secondAttribute="topMargin" constant="-5" id="27c-Zp-nN7"/>
-                                        <constraint firstItem="yds-IJ-re5" firstAttribute="centerY" secondItem="2An-vg-VLl" secondAttribute="centerY" id="2B2-rX-acc"/>
-                                        <constraint firstItem="2An-vg-VLl" firstAttribute="top" secondItem="lpO-JV-6Gg" secondAttribute="topMargin" constant="16" id="FmN-VG-bMR"/>
+                                        <constraint firstItem="yds-IJ-re5" firstAttribute="bottom" secondItem="9V8-Au-v4S" secondAttribute="bottom" id="0kG-Wf-WkA"/>
+                                        <constraint firstItem="yds-IJ-re5" firstAttribute="centerY" secondItem="2An-vg-VLl" secondAttribute="centerY" constant="-31" id="2B2-rX-acc"/>
+                                        <constraint firstItem="yds-IJ-re5" firstAttribute="leading" secondItem="lpO-JV-6Gg" secondAttribute="leadingMargin" id="E0s-vf-Sid"/>
+                                        <constraint firstItem="W6G-Io-6bJ" firstAttribute="top" secondItem="lpO-JV-6Gg" secondAttribute="top" id="Gjw-Xr-AUc"/>
+                                        <constraint firstItem="2An-vg-VLl" firstAttribute="top" secondItem="yds-IJ-re5" secondAttribute="bottom" constant="6" id="HMh-2Q-1cS"/>
                                         <constraint firstItem="W6G-Io-6bJ" firstAttribute="centerY" secondItem="9V8-Au-v4S" secondAttribute="centerY" id="ORX-Re-Az8"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="W6G-Io-6bJ" secondAttribute="bottom" constant="38" id="P7R-YF-RGW"/>
-                                        <constraint firstItem="9V8-Au-v4S" firstAttribute="trailing" secondItem="lpO-JV-6Gg" secondAttribute="trailingMargin" id="Qeo-sX-r7B"/>
-                                        <constraint firstItem="2An-vg-VLl" firstAttribute="leading" secondItem="yds-IJ-re5" secondAttribute="trailing" constant="8" symbolic="YES" id="Uhf-ml-suK"/>
-                                        <constraint firstItem="yds-IJ-re5" firstAttribute="top" secondItem="lpO-JV-6Gg" secondAttribute="topMargin" constant="19" id="ZhG-wT-tWH"/>
-                                        <constraint firstItem="W6G-Io-6bJ" firstAttribute="top" secondItem="lpO-JV-6Gg" secondAttribute="top" id="aWA-zy-GXp"/>
-                                        <constraint firstItem="yds-IJ-re5" firstAttribute="leading" secondItem="lpO-JV-6Gg" secondAttribute="leadingMargin" id="hGB-Q4-beb"/>
+                                        <constraint firstItem="W6G-Io-6bJ" firstAttribute="leading" secondItem="yds-IJ-re5" secondAttribute="trailing" constant="37" id="PB7-JX-b9a"/>
+                                        <constraint firstItem="2An-vg-VLl" firstAttribute="leading" secondItem="yds-IJ-re5" secondAttribute="trailing" constant="-15" id="Uhf-ml-suK"/>
+                                        <constraint firstItem="yds-IJ-re5" firstAttribute="top" secondItem="9V8-Au-v4S" secondAttribute="top" id="aqK-e4-HGe"/>
                                         <constraint firstItem="9V8-Au-v4S" firstAttribute="leading" secondItem="W6G-Io-6bJ" secondAttribute="trailing" constant="8" symbolic="YES" id="jUG-5X-qus"/>
-                                        <constraint firstItem="W6G-Io-6bJ" firstAttribute="leading" secondItem="lpO-JV-6Gg" secondAttribute="leadingMargin" constant="52" id="mo1-4N-zip"/>
-                                        <constraint firstItem="yds-IJ-re5" firstAttribute="centerY" secondItem="lpO-JV-6Gg" secondAttribute="centerY" constant="8.5" id="oJS-zk-2jh"/>
+                                        <constraint firstItem="9V8-Au-v4S" firstAttribute="trailing" secondItem="lpO-JV-6Gg" secondAttribute="trailingMargin" id="on5-Vf-aFt"/>
                                         <constraint firstItem="9V8-Au-v4S" firstAttribute="trailing" secondItem="2An-vg-VLl" secondAttribute="trailing" id="rzr-CI-dhf"/>
+                                        <constraint firstItem="2An-vg-VLl" firstAttribute="top" secondItem="W6G-Io-6bJ" secondAttribute="bottom" constant="3" id="s3e-2o-hBI"/>
+                                        <constraint firstItem="yds-IJ-re5" firstAttribute="leading" secondItem="2An-vg-VLl" secondAttribute="leading" id="udU-Kw-x5U"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -89,10 +91,10 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="trailing" secondItem="Qgw-M1-A5d" secondAttribute="trailingMargin" id="9Ft-9f-Znn"/>
-                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="centerY" secondItem="Qgw-M1-A5d" secondAttribute="centerY" id="Tpg-jS-CjG"/>
-                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="leading" secondItem="Qgw-M1-A5d" secondAttribute="leadingMargin" id="Tuz-Rx-S9n"/>
-                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="top" secondItem="Qgw-M1-A5d" secondAttribute="topMargin" constant="15" id="yvg-Sb-GbP"/>
+                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="trailing" secondItem="Qgw-M1-A5d" secondAttribute="trailingMargin" id="AcA-0t-EzI"/>
+                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="centerY" secondItem="Qgw-M1-A5d" secondAttribute="centerY" id="TbH-kA-WYJ"/>
+                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="leading" secondItem="Qgw-M1-A5d" secondAttribute="leadingMargin" id="wei-7x-zG4"/>
+                                        <constraint firstItem="9wA-PW-dTv" firstAttribute="top" secondItem="Qgw-M1-A5d" secondAttribute="topMargin" constant="15" id="zp4-4L-0Ed"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="0.75686274509999996" green="0.86274509799999999" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
@@ -213,6 +215,7 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="accountNameLabel" destination="eqX-tI-Lkh" id="vbE-OD-Iaw"/>
                         <outlet property="logoutButton" destination="ul2-UD-Idl" id="CcJ-h1-NfG"/>
                     </connections>
                 </viewController>

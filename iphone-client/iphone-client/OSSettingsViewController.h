@@ -10,6 +10,7 @@
 
 @interface OSSettingsViewController : UIViewController
 @property (weak) IBOutlet UIButton *logoutButton;
+@property (weak) IBOutlet UILabel *accountNameLabel;
 - (IBAction)logout:(id)sender;
 
 @end

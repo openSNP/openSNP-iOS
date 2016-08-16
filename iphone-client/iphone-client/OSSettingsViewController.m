@@ -16,6 +16,10 @@
 @implementation OSSettingsViewController
 // TODO: delete data from server
 
+- (KeychainItemWrapper *)getKeychain {
+    return [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"settings";
@@ -23,6 +27,8 @@
     _logoutButton.layer.cornerRadius = 2;
     _logoutButton.layer.borderWidth = 2;
     _logoutButton.layer.borderColor = [UIColor colorWithRed:160. green:0. blue:0. alpha:1.].CGColor;
+    
+    _accountNameLabel.text = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
 }
 
 
