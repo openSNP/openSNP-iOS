@@ -41,17 +41,15 @@ typedef enum : NSInteger {
     self.tableView.tableFooterView = footer;
     [self.tableView setContentInset:UIEdgeInsetsMake(20, 0, 0, 0)];
     
-    // set the view's background color
-    //[self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
-    
+    [self.view setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     self.navigationItem.title = @"openSNP";
-    
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     
     UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
     [refresh addTarget:self action:@selector(updateFeed) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
     
+    // configure session so that cache is ignored
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     sessionConfig.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
     self.session = [NSURLSession sessionWithConfiguration:sessionConfig];
@@ -296,6 +294,17 @@ typedef enum : NSInteger {
         // set the user's key in the request header
         [feedRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
         
+        NSDate *lastRefreshedFeed = [[NSUserDefaults standardUserDefaults] objectForKey:LAST_REFRESHED_FEED_KEY];
+        if (lastRefreshedFeed) {
+            NSDate *threeMinutesPostRefresh = [lastRefreshedFeed dateByAddingTimeInterval:3*60];
+            if ([threeMinutesPostRefresh compare:[NSDate date]] == NSOrderedDescending) {
+                NSLog(@"abstaining");
+                // threeMinutesPostRefresh is later than the current time; don't update the feed
+                return;
+            }
+        }
+        // if lastRefreshedFeed is nil, the connection failed; update the feed
+        
         
         [[_session dataTaskWithRequest:feedRequest
                      completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -307,18 +316,20 @@ typedef enum : NSInteger {
                                                                                       options:kNilOptions
                                                                                         error:&jsonError];
                              if (jsonError) {
+                                 [[NSUserDefaults standardUserDefaults] setObject:nil forKey:LAST_REFRESHED_FEED_KEY];
                                  dispatch_async(dispatch_get_main_queue(), ^{
                                      // TODO extend error cell to include option for filing a bug report
                                      [self displayError:[NSString stringWithFormat:@"Unable to parse JSON: %@", jsonError.localizedDescription]];
                                  });
                              } else {
                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:LAST_REFRESHED_FEED_KEY];
                                      [self updateFeedFromDictionary:respDict];
                                  });
                              }
                          } else {
                              dispatch_async(dispatch_get_main_queue(), ^{
-                                 // TODO: prompt to retry
+                                 [[NSUserDefaults standardUserDefaults] setObject:nil forKey:LAST_REFRESHED_FEED_KEY];
                                  [self displayError:[NSString stringWithFormat:@"Connection error: %@", error.localizedDescription]];
                              });
                          }
