@@ -269,7 +269,8 @@ typedef enum : NSInteger {
 #pragma mark Connections
 - (void)updateFeedFromDictionary:(NSDictionary *)respDict {
     if ([respDict[@"error"] integerValue] == 1) {
-        // TODO: show an action cell allowing a refresh or contacting us
+        // there's a 400-coded error
+        [self displayError:[NSString stringWithFormat:@"Request denied because \"%@\". This is likely a bug; report it to %@.", respDict[@"message"], REPORT_BUG_URL]];
     } else {
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -311,7 +312,9 @@ typedef enum : NSInteger {
                                      [self displayError:[NSString stringWithFormat:@"Unable to parse JSON: %@", jsonError.localizedDescription]];
                                  });
                              } else {
-                                 [self updateFeedFromDictionary:respDict];
+                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                     [self updateFeedFromDictionary:respDict];
+                                 });
                              }
                          } else {
                              dispatch_async(dispatch_get_main_queue(), ^{

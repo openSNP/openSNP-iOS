@@ -20,10 +20,18 @@
         [self.message setBackgroundColor:[UIColor redColor]];
         [self.message setFont:[UIFont fontWithName:@"Avenir-Heavy" size:15.0f]];
     }
+    
+    [self.message setTextColor:[UIColor whiteColor]];
+    
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+- (IBAction)exportMessage:(id)sender {
+    
 }
 
 

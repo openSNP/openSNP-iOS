@@ -12,4 +12,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *message;
 @property (strong) NSString *messageText;
 @property (assign) BOOL isError;
+
+- (IBAction)exportMessage:(id)sender;
+
 @end
