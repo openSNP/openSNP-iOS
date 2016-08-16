@@ -27,7 +27,9 @@
 
 
 - (IBAction)logout:(id)sender {
-    UIAlertController *logoutAlert = [UIAlertController alertControllerWithTitle:@"You're sure?" message:@"Logging out will stop future uploads but won't delete previous ones stored on openSNP's servers." preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController *logoutAlert = [UIAlertController alertControllerWithTitle:@"You're sure?"
+                                                                         message:@"Logging out will stop future uploads but won't delete previous ones stored on openSNP's servers."
+                                                                  preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"logout" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];

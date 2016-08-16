@@ -7,12 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
 
-@interface OSSystemMessageViewer : UIViewController
+@interface OSSystemMessageViewer : UIViewController <MFMailComposeViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *message;
 @property (strong) NSString *messageText;
 @property (assign) BOOL isError;
-
-- (IBAction)exportMessage:(id)sender;
 
 @end

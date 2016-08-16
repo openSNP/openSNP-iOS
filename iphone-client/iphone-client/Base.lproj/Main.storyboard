@@ -186,8 +186,11 @@
                                     <action selector="logout:" destination="uGR-Ml-vPB" eventType="touchUpInside" id="wsf-YM-6Gj"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="eqX-tI-Lkh">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="eqX-tI-Lkh">
                                 <rect key="frame" x="20" y="475" width="280" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="r1K-2M-poG"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="14"/>
                                 <color key="textColor" red="0.75686274509999996" green="0.86274509799999999" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -196,7 +199,10 @@
                         <color key="backgroundColor" red="0.38431372549999998" green="0.59607843140000005" blue="0.76862745099999996" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="ul2-UD-Idl" firstAttribute="centerY" secondItem="aoF-dG-DLj" secondAttribute="centerY" id="OlM-27-eu0"/>
+                            <constraint firstItem="eqX-tI-Lkh" firstAttribute="leading" secondItem="aoF-dG-DLj" secondAttribute="leadingMargin" constant="4" id="SVZ-BT-9Ws"/>
+                            <constraint firstItem="lNi-ru-hHo" firstAttribute="top" secondItem="eqX-tI-Lkh" secondAttribute="bottom" constant="8" symbolic="YES" id="jbK-7c-irg"/>
                             <constraint firstItem="ul2-UD-Idl" firstAttribute="top" secondItem="bFT-NP-gVf" secondAttribute="bottom" constant="237" id="t3B-Ea-B87"/>
+                            <constraint firstItem="eqX-tI-Lkh" firstAttribute="centerX" secondItem="ul2-UD-Idl" secondAttribute="centerX" id="upq-wj-eCC"/>
                             <constraint firstItem="ul2-UD-Idl" firstAttribute="centerX" secondItem="aoF-dG-DLj" secondAttribute="centerX" id="uqc-qI-HGC"/>
                         </constraints>
                         <variation key="default">

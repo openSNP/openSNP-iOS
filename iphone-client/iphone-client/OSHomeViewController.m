@@ -381,7 +381,6 @@ typedef enum : NSInteger {
                                                        quantitySamplePredicate:predicate
                                                                        options:HKStatisticsOptionNone
                                                              completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
-                                                                 // wait for main thread
                                                                  HKQuantity *quantity = result.averageQuantity;
                                                                  CGFloat d_value = [quantity doubleValueForUnit:pair.unit];
                                                                  [_toUpload addObject:[NSDictionary dictionaryWithObjectsAndKeys:
