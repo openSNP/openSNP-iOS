@@ -271,7 +271,7 @@ typedef enum : NSInteger {
 - (void)updateFeedFromDictionary:(NSDictionary *)respDict {
     if ([respDict[@"error"] integerValue] == 1) {
         // there's a 400-coded error
-        [self displayError:[NSString stringWithFormat:@"Request denied because \"%@\". This is likely a bug; tap to file report.", respDict[@"message"]]];
+        [self displayError:[NSString stringWithFormat:@"Request denied because \"%@\". This is likely a bug; tap to file a report.", respDict[@"message"]]];
     } else {
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         NSTimeZone *tz = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
