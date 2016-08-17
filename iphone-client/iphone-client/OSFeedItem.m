@@ -18,6 +18,9 @@
         self.body = b;
         self.imageName = i;
         self.image = [UIImage imageNamed:self.imageName];
+        if (!_image) {
+            self.image = [UIImage imageNamed:@"questions.png"];
+        }
         self.date = d;
         self.dateLabel = [self formatDateLabel];
         self.cellClass = [OSInfoTableViewCell class];
