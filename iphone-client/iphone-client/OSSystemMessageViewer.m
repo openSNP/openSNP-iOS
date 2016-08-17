@@ -18,11 +18,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationItem setTitle:@"sys. message"];
-    [self.message setText:_messageText];
+    [self.navigationItem setTitle:(_feedItem.verb) ? _feedItem.verb : @"sys. message"];
+    [self.message setText:_feedItem.body];
     [self.message setFont:[UIFont fontWithName:@"Avenir Book" size:15.0f]];
     
-    if (_isError) {
+    if (_feedItem.isError) {
         [self.message setBackgroundColor:[UIColor redColor]];
         [self.message setFont:[UIFont fontWithName:@"Avenir-Heavy" size:15.0f]];
         
@@ -47,7 +47,7 @@
     [composeVC setSubject:@"openSNP iOS bug report"];
     
     NSString *accountUsername = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
-    [composeVC setMessageBody:[_messageText stringByAppendingString:
+    [composeVC setMessageBody:[_feedItem.body stringByAppendingString:
                                [NSString stringWithFormat:@" (account: %@)", accountUsername]]
                        isHTML:FALSE];
     

@@ -21,7 +21,6 @@
         self.date = d;
         self.dateLabel = [self formatDateLabel];
         self.cellClass = [OSInfoTableViewCell class];
-        
     }
     
     return self;

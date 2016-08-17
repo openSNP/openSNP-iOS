@@ -15,6 +15,7 @@
 @property (strong) NSString *body;
 @property (strong) NSDate *date;
 @property (strong) NSString *imageName;
+@property (strong) NSString *verb;
 
 @property (strong) NSString *actionDescription;
 @property (assign) NSInteger actionId;

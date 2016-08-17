@@ -23,7 +23,8 @@
 @property (strong, nonatomic) NSMutableArray *toUpload;
 @property (nonatomic, strong) NSURLSession *session;
 typedef enum : NSInteger {
-    OSCellActionLogin = 0
+    OSCellActionLogin = 0,
+    OSCellActionAuthorize = 1
 } OSCellAction;
 @end
 
@@ -63,8 +64,7 @@ typedef enum : NSInteger {
     if ([segue.identifier isEqualToString:@"systemMessage"]) {
         OSFeedItem *selectedCell = _cellData[[[self tableView] indexPathForSelectedRow].row];
         if (selectedCell.cellClass == [OSInfoTableViewCell class]) {
-            [(OSSystemMessageViewer *)segue.destinationViewController setMessageText:selectedCell.body];
-            [(OSSystemMessageViewer *)segue.destinationViewController setIsError:selectedCell.isError];
+            [(OSSystemMessageViewer *)segue.destinationViewController setFeedItem:selectedCell];
         }
     }
 }
@@ -242,6 +242,9 @@ typedef enum : NSInteger {
             case OSCellActionLogin:
                 [self presentLogin];
                 break;
+            case OSCellActionAuthorize:
+                [self requestHealthAccess];
+                break;
             default:
                 break;
         }
@@ -268,14 +271,18 @@ typedef enum : NSInteger {
 - (void)updateFeedFromDictionary:(NSDictionary *)respDict {
     if ([respDict[@"error"] integerValue] == 1) {
         // there's a 400-coded error
-        [self displayError:[NSString stringWithFormat:@"Request denied because \"%@\". This is likely a bug; report it to %@.", respDict[@"message"], REPORT_BUG_URL]];
+        [self displayError:[NSString stringWithFormat:@"Request denied because \"%@\". This is likely a bug; tap to file report.", respDict[@"message"]]];
     } else {
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        NSTimeZone *tz = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+        [dateFormatter setTimeZone:tz];
         [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        
         for (NSDictionary *event in respDict[@"message"]) {
             OSFeedItem *item = [[OSFeedItem alloc] initWithBody:event[@"message"]
                                                            date:[dateFormatter dateFromString:event[@"ts"]]
                                                       imageName:event[@"image"]];
+            item.verb = event[@"verb"];
             [_cellData addObject:item];
         }
         
@@ -290,52 +297,46 @@ typedef enum : NSInteger {
     if (![self userExists]) {
         [self displayLoginAction];
     } else {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = TRUE;
+        
         NSMutableURLRequest *feedRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:FEED_URL]];
+        
         // set the user's key in the request header
+        NSString *accountUsername = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
         [feedRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
-        
-        NSDate *lastRefreshedFeed = [[NSUserDefaults standardUserDefaults] objectForKey:LAST_REFRESHED_FEED_KEY];
-        if (lastRefreshedFeed) {
-            NSDate *threeMinutesPostRefresh = [lastRefreshedFeed dateByAddingTimeInterval:3*60];
-            if ([threeMinutesPostRefresh compare:[NSDate date]] == NSOrderedDescending) {
-                NSLog(@"abstaining");
-                // threeMinutesPostRefresh is later than the current time; don't update the feed
-                return;
-            }
-        }
-        // if lastRefreshedFeed is nil, the connection failed; update the feed
-        
+        [feedRequest setValue:accountUsername forHTTPHeaderField:EMAIL_HTTP_HEADER_KEY];
         
         [[_session dataTaskWithRequest:feedRequest
                      completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                          [_cellData removeAllObjects];
                          
                          if (!error) {
+                             
+                             NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                             
                              NSError *jsonError = nil;
                              NSDictionary *respDict = [NSJSONSerialization JSONObjectWithData:data
                                                                                       options:kNilOptions
                                                                                         error:&jsonError];
                              if (jsonError) {
-                                 [[NSUserDefaults standardUserDefaults] setObject:nil forKey:LAST_REFRESHED_FEED_KEY];
                                  dispatch_async(dispatch_get_main_queue(), ^{
                                      // TODO extend error cell to include option for filing a bug report
                                      [self displayError:[NSString stringWithFormat:@"Unable to parse JSON: %@", jsonError.localizedDescription]];
                                  });
                              } else {
                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:LAST_REFRESHED_FEED_KEY];
                                      [self updateFeedFromDictionary:respDict];
                                  });
                              }
                          } else {
                              dispatch_async(dispatch_get_main_queue(), ^{
-                                 [[NSUserDefaults standardUserDefaults] setObject:nil forKey:LAST_REFRESHED_FEED_KEY];
                                  [self displayError:[NSString stringWithFormat:@"Connection error: %@", error.localizedDescription]];
                              });
                          }
                      }] resume];
     }
     
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = FALSE;
     [self.refreshControl endRefreshing];
 }
 
@@ -381,8 +382,8 @@ typedef enum : NSInteger {
 
 #pragma mark Health queries
 
+// find the average of the type of ``pair`` above some time
 - (void)getPairAverage:(OSHealthPair *)pair {
-    // find the average of the type of ``pair`` above some time
     NSDate *end = [NSDate date];
     // TODO: allow customization of this span
     NSDate *start = [NSDate dateWithTimeInterval:-60*60*24*7 sinceDate:end];
