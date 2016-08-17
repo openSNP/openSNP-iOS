@@ -32,8 +32,6 @@
     OSHomeViewController *hvc = (OSHomeViewController *)window.rootViewController;
     [hvc setHealthStore:_healthStore];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"loggedIn"]) {
-    }
     return YES;
 }
 

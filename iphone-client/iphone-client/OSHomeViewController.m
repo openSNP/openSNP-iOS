@@ -17,7 +17,10 @@
 #import "OSConstants.h"
 #import "KeychainItemWrapper.h"
 
-
+/* TODO:
+    - it appears logging in/out doesn't successfully update the feed afterwards (manually works, though)
+    - remaining 2 TODOs on this page
+ */
 @interface OSHomeViewController ()
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
 @property (nonatomic, strong) NSURLSession *session;
@@ -327,7 +330,6 @@ typedef enum : NSInteger {
                                                                                         error:&jsonError];
                              if (jsonError) {
                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                     // TODO extend error cell to include option for filing a bug report
                                      [self displayError:[NSString stringWithFormat:@"Unable to parse JSON: %@", jsonError.localizedDescription]];
                                  });
                              } else {
