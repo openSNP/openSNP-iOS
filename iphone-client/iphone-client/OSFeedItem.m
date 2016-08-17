@@ -29,11 +29,11 @@
     return self;
 }
 
-- (id)initWithActionDescription:(NSString *)d actionId:(NSInteger)aid {
+- (id)initWithActionDescription:(NSString *)d andCompletion:(void (^)(void))block {
     self = [super init];
     if (self) {
         self.actionDescription = d;
-        self.actionId = aid;
+        self.action = block;
         self.cellClass = [OSActionTableViewCell class];
     }
     

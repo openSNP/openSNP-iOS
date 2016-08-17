@@ -19,16 +19,15 @@
 
 /* TODO:
     - it appears logging in/out doesn't successfully update the feed afterwards (manually works, though)
+    - test what happens if user doesn't allow all health types
+    -
+    - have some information telling the user that data-uploads will occur weekly and in the background
     - remaining 2 TODOs on this page
  */
 @interface OSHomeViewController ()
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSDictionary *toUpload;
-typedef enum : NSInteger {
-    OSCellActionLogin = 0,
-    OSCellActionAuthorize = 1
-} OSCellAction;
 @end
 
 @implementation OSHomeViewController
@@ -85,6 +84,7 @@ typedef enum : NSInteger {
     return (uuid != nil) && ([uuid length] > 0);
 }
 
+// show an action cell
 - (void)serveItem:(OSFeedItem *)item {
     [_cellData addObject:item];
     [self.tableView reloadData];
@@ -93,7 +93,9 @@ typedef enum : NSInteger {
 // displays a non-actionable error item
 - (void)displayError:(NSString *)message {
     [_cellData removeAllObjects];
-    OSFeedItem *errorItem = [[OSFeedItem alloc] initWithBody:message date:[NSDate date] imageName:@"exclamation_mark.png"];
+    OSFeedItem *errorItem = [[OSFeedItem alloc] initWithBody:message
+                                                        date:[NSDate date]
+                                                   imageName:@"exclamation_mark.png"];
     errorItem.isError = TRUE;
     [self serveItem:errorItem];
 }
@@ -101,10 +103,16 @@ typedef enum : NSInteger {
 
 - (void)displayLoginAction {
     [_cellData removeAllObjects];
-    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Please login —" actionId:OSCellActionLogin];
+    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Please login —" andCompletion:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // display login webview
+            OSLoginViewController *loginVC = [[OSLoginViewController alloc] initWithURLString:LOGIN_URL];
+            [self presentViewController:loginVC animated:YES completion:nil];
+        });
+    }];
+                       
     [self serveItem:actionItem];
 }
-
 
 - (void)requestHealthAccess {
     if ([HKHealthStore isHealthDataAvailable]) {
@@ -116,27 +124,23 @@ typedef enum : NSInteger {
                 if (!success) {
                     [self displayError:@"There was a problem getting Health data!"];
                 }
-                if (![self userExists]) {
-                    // user hasn't authenticated
-                    self.navigationItem.rightBarButtonItem.enabled = false;
-                    [self displayLoginAction];
-                } else {
-                    [self updateFeed];
-                    for (OSHealthPair *pair in [self dataTypesAndUnits]) {
-                        [_healthStore enableBackgroundDeliveryForType:pair.type frequency:HKUpdateFrequencyWeekly withCompletion:^(BOOL success, NSError * _Nullable error) {
-                            if (success) {
-                                [self performUpload:pair];
-                            } else {
-                                // TODO add item to (server) feed about failure
-                            }
-                        }];
-                    }
+                
+                [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:@"authorizedHealth"];
+                [self updateFeed];
+                
+                for (OSHealthPair *pair in [self dataTypesAndUnits]) {
+                    [_healthStore enableBackgroundDeliveryForType:pair.type frequency:HKUpdateFrequencyWeekly withCompletion:^(BOOL success, NSError * _Nullable error) {
+                        if (success) {
+                            [self performUpload:pair];
+                        } else {
+                            // TODO add item to (server) feed about failure
+                        }
+                    }];
                 }
             });
         }];
         
     } else {
-        self.navigationItem.rightBarButtonItem.enabled = false;
         [self displayError:@"Health data isn't available on this device!"];
     }
 }
@@ -146,7 +150,7 @@ typedef enum : NSInteger {
     [super viewDidAppear:animated];
     
     // requesting health access will call
-    [self requestHealthAccess];
+    [self updateFeed];
 }
 
 
@@ -223,6 +227,7 @@ typedef enum : NSInteger {
             // the style choice is meaningless; this is simpler than writing a custom initializer
             cell = [[OSInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:iden];
         }
+        
         cell.articleBody.text = item.body;
         cell.imgView.image = item.image;
         cell.dateTag.text = item.dateLabel;
@@ -236,7 +241,7 @@ typedef enum : NSInteger {
         }
         
         cell.actionDescriptionLabel.text = item.actionDescription;
-        cell.actionId = item.actionId;
+        cell.action = item.action;
         return cell;
     }
 }
@@ -249,16 +254,7 @@ typedef enum : NSInteger {
     OSFeedItem *item = _cellData[indexPath.row];
     
     if (item.cellClass == [OSActionTableViewCell class]) {
-        switch (item.actionId) {
-            case OSCellActionLogin:
-                [self presentLogin];
-                break;
-            case OSCellActionAuthorize:
-                [self requestHealthAccess];
-                break;
-            default:
-                break;
-        }
+        item.action();
     }
 }
 
@@ -268,13 +264,6 @@ typedef enum : NSInteger {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _cellData.count;
-}
-
-
-#pragma mark Transitions 
-- (void)presentLogin {
-    OSLoginViewController *loginVC = [[OSLoginViewController alloc] initWithURLString:LOGIN_URL];
-    [self presentViewController:loginVC animated:YES completion:nil];
 }
 
 
@@ -305,7 +294,10 @@ typedef enum : NSInteger {
 
 - (void)updateFeed {
     if (![self userExists]) {
+        self.navigationItem.rightBarButtonItem.enabled = false;
         [self displayLoginAction];
+    } else if (![HKHealthStore isHealthDataAvailable]) {
+        
     } else {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = TRUE;
         
@@ -350,7 +342,6 @@ typedef enum : NSInteger {
 }
 
 - (void)updateAfterLogin {
-    [_cellData removeAllObjects];
     self.navigationItem.rightBarButtonItem.enabled = true;
     [self updateFeed];
 }

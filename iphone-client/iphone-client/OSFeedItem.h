@@ -18,7 +18,7 @@
 @property (strong) NSString *verb;
 
 @property (strong) NSString *actionDescription;
-@property (assign) NSInteger actionId;
+@property (assign) void (^action)(void);
 
 // set this to get a red background color in sys. message
 @property (assign) BOOL isError;
@@ -34,6 +34,6 @@
 - (id)initWithBody:(NSString *)b date:(NSDate *)d imageName:(NSString *)i;
 
 // use this initializer when creating a OSActionTableViewCell instance
-- (id)initWithActionDescription:(NSString *)d actionId:(NSInteger)aid;
+- (id)initWithActionDescription:(NSString *)d andCompletion:(void (^)(void))block;
     
 @end

@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 // OSInfoTableViewCells have an action when tapped; they convey little information
-// Each action must be handled individually by the controller, thus they are rare.
+// Each instance has a completion block, making it easy to create new actions
 @interface OSActionTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *actionDescriptionLabel;
-@property (assign) NSInteger actionId;
+@property (assign) void (^action)(void);
 
 @end
