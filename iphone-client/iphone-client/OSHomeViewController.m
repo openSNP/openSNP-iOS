@@ -102,11 +102,22 @@
 
 - (void)displayLoginAction {
     [_cellData removeAllObjects];
-    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Please login —" andCompletion:^{
+    OSFeedItem *loginAction = [[OSFeedItem alloc] initWithActionDescription:@"— Please login —" andCompletion:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             // display login webview
             OSLoginViewController *loginVC = [[OSLoginViewController alloc] initWithURLString:LOGIN_URL];
             [self presentViewController:loginVC animated:YES completion:nil];
+        });
+    }];
+                       
+    [self serveItem:loginAction];
+}
+
+- (void)displayAuthorizeAction {
+    [_cellData removeAllObjects];
+    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Authorize health access —" andCompletion:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self requestHealthAccess];
         });
     }];
                        
@@ -115,6 +126,11 @@
 
 - (void)requestHealthAccess {
     if ([HKHealthStore isHealthDataAvailable]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@""]) {
+            // the user has already answered the request to authorize
+            return;
+        }
+        
         NSSet *readDataTypes = [self dataTypesToRead];
         
         [self.healthStore requestAuthorizationToShareTypes:NULL readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
@@ -124,12 +140,14 @@
                     [self displayError:@"There was a problem getting Health data!"];
                 }
                 
-                [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:@"authorizedHealth"];
+                [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:AUTHORIZED_HEALTH_USER_KEY];
                 [self updateFeed];
                 
                 for (OSHealthPair *pair in [self dataTypesAndUnits]) {
+                    // request weekly notifications when data is modified
                     [_healthStore enableBackgroundDeliveryForType:pair.type frequency:HKUpdateFrequencyWeekly withCompletion:^(BOOL success, NSError * _Nullable error) {
                         if (success) {
+                            // background delivery was successful; upload the attribute
                             [self performUpload:pair];
                         } else {
                             // TODO add item to (server) feed about failure
@@ -195,13 +213,14 @@
               @[HKQuantityTypeIdentifierForcedExpiratoryVolume1, [HKUnit unitFromString:@"cm^3"]],
               @[HKQuantityTypeIdentifierPeakExpiratoryFlowRate, [HKUnit unitFromString:@"cm^3"]]]
             map:^(id x, NSUInteger i) {
+                // convert the 2D-array to health-pairs (this is just convenience/nomenclature)
                 return [[OSHealthPair alloc] initWithQuantityTypeId:x[0] unit:x[1]];
             }];
 }
 
 
 
-// Returns data to upload
+// returns data to upload
 - (NSSet *)dataTypesToRead {
     NSArray *types = [[self dataTypesAndUnits] map:^(OSHealthPair *x, NSUInteger i) {
         return x.type;
@@ -210,7 +229,6 @@
     return [NSSet setWithArray:
             [types arrayByAddingObjectsFromArray:[self characteristicsToRead]]];
 }
-
 
 
 
@@ -246,6 +264,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // action and info cells are the same height
     return 68.;
 }
 
@@ -266,7 +285,7 @@
 }
 
 
-#pragma mark Connections
+#pragma mark -
 - (void)updateFeedFromDictionary:(NSDictionary *)respDict {
     if ([respDict[@"error"] integerValue] == 1) {
         // there's a 400-coded error
@@ -295,8 +314,8 @@
     if (![self userExists]) {
         self.navigationItem.rightBarButtonItem.enabled = false;
         [self displayLoginAction];
-    } else if (![HKHealthStore isHealthDataAvailable]) {
-        
+    } else if (![[NSUserDefaults standardUserDefaults] boolForKey:AUTHORIZED_HEALTH_USER_KEY]) {
+        [self displayAuthorizeAction];
     } else {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = TRUE;
         
@@ -339,6 +358,7 @@
     [self.refreshControl endRefreshing];
 }
 
+// called after successful login from OSLoginVC
 - (void)updateAfterLogin {
     self.navigationItem.rightBarButtonItem.enabled = true;
     [self updateFeed];
@@ -351,14 +371,17 @@
     while (_toUpload == nil) { /* spin */ }
     
     NSError *error;
+    // serialize the ``_toUpload`` dict (with attribute name and weekly average)
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_toUpload
                                                        options:0
                                                          error:&error];
     NSMutableURLRequest *uploadRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:UPLOAD_URL]];
     [uploadRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    // data will be sent via POST
     [uploadRequest setHTTPMethod:@"POST"];
     [uploadRequest setHTTPBody:jsonData];
     
+    // authentication is the same as ``/feed``: credentials are put in the request's header
     [uploadRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
     NSString *email = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
     [uploadRequest setValue:email forHTTPHeaderField:EMAIL_HTTP_HEADER_KEY];
@@ -379,15 +402,20 @@
 // find the average of the type of ``pair`` above some time
 - (void)getPairAverage:(OSHealthPair *)pair {
     NSDate *end = [NSDate date];
+    // ``start`` is a week ago
     NSDate *start = [NSDate dateWithTimeInterval:-60*60*24*7 sinceDate:end];
-    NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate:start endDate:end options:HKQueryOptionStrictStartDate];
-    
+    // predicate with range for this past week
+    NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate:start
+                                                               endDate:end
+                                                               options:HKQueryOptionStrictStartDate];
     HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:pair.type
                                                        quantitySamplePredicate:predicate
                                                                        options:HKStatisticsOptionNone
                                                              completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
+                                                                 // average value over the course of the week
                                                                  HKQuantity *quantity = result.averageQuantity;
                                                                  CGFloat d_value = [quantity doubleValueForUnit:pair.unit];
+                                                                 // create a dictionary with the string-classname of the attribute along with value ``quantity``
                                                                  _toUpload = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                               [NSNumber numberWithFloat:d_value], @"value",
                                                                               [NSString stringWithFormat:@"%@", pair.type], @"type",

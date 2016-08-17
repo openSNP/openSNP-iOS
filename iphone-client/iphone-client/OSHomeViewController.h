@@ -9,7 +9,9 @@
 @import UIKit;
 @import HealthKit;
 
+// the main VC, feed
 @interface OSHomeViewController : UITableViewController <NSURLConnectionDelegate>
+// init'ed upon launch from app-delegate
 @property (nonatomic) HKHealthStore *healthStore;
 
 // the HKQuantityTypeIdentifier's to read

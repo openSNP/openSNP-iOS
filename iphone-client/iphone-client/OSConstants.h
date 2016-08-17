@@ -14,5 +14,5 @@
 #define KEY_HTTP_HEADER_KEY @"KEY"
 #define EMAIL_HTTP_HEADER_KEY @"EMAIL"
 #define KEYCHAIN_ID @"openSNP"
-#define LAST_REFRESHED_FEED_KEY @"lastRefreshed"
+#define AUTHORIZED_HEALTH_USER_KEY @"authorizedHealth"
 #endif
