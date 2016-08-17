@@ -27,26 +27,13 @@
 
 
     // Override point for customization after application launch.
-    //_healthStore = [[HKHealthStore alloc] init];
-    //UIWindow *window = [UIApplication sharedApplication].keyWindow;
-    //OSHomeViewController *hvc = (OSHomeViewController *)window.rootViewController;
-    //[hvc setHealthStore:_healthStore];
-    //
-    //if ([[NSUserDefaults standardUserDefaults] boolForKey:@"loggedIn"]) {
-    //    NSSet *readTypes = [hvc dataTypesToRead];
-    //    for (HKObjectType *type in readTypes) {
-    //        [_healthStore enableBackgroundDeliveryForType:type frequency:HKUpdateFrequencyImmediate withCompletion:^(BOOL success, NSError * _Nullable error) {
-    //            if (success) {
-    //                // TODO
-    //            } else {
-    //                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@""
-    //                                                                               message:@"This is an alert."
-    //                                                                        preferredStyle:UIAlertControllerStyleAlert];
-    //            }
-    //            
-    //        }];
-    //    }
-    //}
+    _healthStore = [[HKHealthStore alloc] init];
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    OSHomeViewController *hvc = (OSHomeViewController *)window.rootViewController;
+    [hvc setHealthStore:_healthStore];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"loggedIn"]) {
+    }
     return YES;
 }
 

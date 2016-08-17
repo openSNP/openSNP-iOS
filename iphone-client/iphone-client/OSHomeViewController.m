@@ -20,8 +20,8 @@
 
 @interface OSHomeViewController ()
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
-@property (strong, nonatomic) NSMutableArray *toUpload;
 @property (nonatomic, strong) NSURLSession *session;
+@property (nonatomic, strong) NSDictionary *toUpload;
 typedef enum : NSInteger {
     OSCellActionLogin = 0,
     OSCellActionAuthorize = 1
@@ -87,7 +87,6 @@ typedef enum : NSInteger {
     [self.tableView reloadData];
 }
 
-
 // displays a non-actionable error item
 - (void)displayError:(NSString *)message {
     [_cellData removeAllObjects];
@@ -120,9 +119,19 @@ typedef enum : NSInteger {
                     [self displayLoginAction];
                 } else {
                     [self updateFeed];
+                    for (OSHealthPair *pair in [self dataTypesAndUnits]) {
+                        [_healthStore enableBackgroundDeliveryForType:pair.type frequency:HKUpdateFrequencyWeekly withCompletion:^(BOOL success, NSError * _Nullable error) {
+                            if (success) {
+                                [self performUpload:pair];
+                            } else {
+                                // TODO add item to (server) feed about failure
+                            }
+                        }];
+                    }
                 }
             });
         }];
+        
     } else {
         self.navigationItem.rightBarButtonItem.enabled = false;
         [self displayError:@"Health data isn't available on this device!"];
@@ -191,7 +200,6 @@ typedef enum : NSInteger {
     NSArray *types = [[self dataTypesAndUnits] map:^(OSHealthPair *x, NSUInteger i) {
         return x.type;
     }];
-    
     
     return [NSSet setWithArray:
             [types arrayByAddingObjectsFromArray:[self characteristicsToRead]]];
@@ -290,7 +298,6 @@ typedef enum : NSInteger {
             [self.tableView reloadData];
         });
     }
-    
 }
 
 - (void)updateFeed {
@@ -346,15 +353,10 @@ typedef enum : NSInteger {
     [self updateFeed];
 }
 
-- (void)performUpload {
-    _toUpload = [NSMutableArray array];
-    
-    for (OSHealthPair *p in [self dataTypesAndUnits]) {
-        [self getPairAverage:p];
-    }
-    
-    // wait until all threads finish their query
-    while (_toUpload.count < [self dataTypesAndUnits].count) {}
+- (void)performUpload:(OSHealthPair *)pair {
+    _toUpload = nil;
+    [self getPairAverage:pair];
+    while (_toUpload == nil) { /* spin */ }
     
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_toUpload
@@ -385,7 +387,6 @@ typedef enum : NSInteger {
 // find the average of the type of ``pair`` above some time
 - (void)getPairAverage:(OSHealthPair *)pair {
     NSDate *end = [NSDate date];
-    // TODO: allow customization of this span
     NSDate *start = [NSDate dateWithTimeInterval:-60*60*24*7 sinceDate:end];
     NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate:start endDate:end options:HKQueryOptionStrictStartDate];
     
@@ -395,10 +396,10 @@ typedef enum : NSInteger {
                                                              completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
                                                                  HKQuantity *quantity = result.averageQuantity;
                                                                  CGFloat d_value = [quantity doubleValueForUnit:pair.unit];
-                                                                 [_toUpload addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                       [NSNumber numberWithFloat:d_value], @"value",
-                                                                                       [NSString stringWithFormat:@"%@", pair.type], @"type",
-                                                                                       nil]];
+                                                                 _toUpload = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                              [NSNumber numberWithFloat:d_value], @"value",
+                                                                              [NSString stringWithFormat:@"%@", pair.type], @"type",
+                                                                              nil];
                                                              }];
     [self.healthStore executeQuery:query];
 }
