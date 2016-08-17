@@ -11,7 +11,5 @@
 #import "OSFeedItem.h"
 
 @interface OSSystemMessageViewer : UIViewController <MFMailComposeViewControllerDelegate>
-@property (weak, nonatomic) IBOutlet UITextView *message;
 @property (strong) OSFeedItem *feedItem;
-
 @end

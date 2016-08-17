@@ -12,7 +12,9 @@
 @interface OSHomeViewController : UITableViewController <NSURLConnectionDelegate>
 @property (nonatomic) HKHealthStore *healthStore;
 
+// the HKQuantityTypeIdentifier's to read
 - (NSSet *)dataTypesToRead;
+// cleanup and update the feed after logging-in
 - (void)updateAfterLogin;
 
 @end

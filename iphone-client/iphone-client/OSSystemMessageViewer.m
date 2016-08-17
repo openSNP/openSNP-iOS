@@ -10,6 +10,10 @@
 #import "KeychainItemWrapper.h"
 #import "OSConstants.h"
 
+@interface OSSystemMessageViewer ()
+@property (weak, nonatomic) IBOutlet UITextView *message;
+@end
+
 @implementation OSSystemMessageViewer
 
 - (KeychainItemWrapper *)getKeychain {

@@ -14,20 +14,18 @@
 
 @property (strong) NSString *body;
 @property (strong) NSDate *date;
-@property (strong) NSString *imageName;
 @property (strong) NSString *verb;
 
 @property (strong) NSString *actionDescription;
-@property (assign) void (^action)(void);
+@property (nonatomic, copy) void (^action)(void);
 
-// set this to get a red background color in sys. message
+// set this to get a red background color in sys. message and bug-reporting abilities
 @property (assign) BOOL isError;
 
-// dateLabel and image are set by this class
+// cellClass is set depending on which initilizer is called and must be public
+@property (strong) Class cellClass;
 @property (strong) NSString *dateLabel;
 @property (strong) UIImage *image;
-// cellClass is set depending on which initilizer is called
-@property (strong) Class cellClass;
 
 
 // use this initializer when creating a OSInfoTableViewCell instance

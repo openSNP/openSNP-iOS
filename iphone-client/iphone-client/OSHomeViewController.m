@@ -20,7 +20,6 @@
 /* TODO:
     - it appears logging in/out doesn't successfully update the feed afterwards (manually works, though)
     - test what happens if user doesn't allow all health types
-    -
     - have some information telling the user that data-uploads will occur weekly and in the background
     - remaining 2 TODOs on this page
  */
@@ -313,8 +312,7 @@
                          [_cellData removeAllObjects];
                          
                          if (!error) {
-                             
-                             NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                             //NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                              
                              NSError *jsonError = nil;
                              NSDictionary *respDict = [NSJSONSerialization JSONObjectWithData:data
@@ -346,6 +344,7 @@
     [self updateFeed];
 }
 
+// upload an individual health-pair
 - (void)performUpload:(OSHealthPair *)pair {
     _toUpload = nil;
     [self getPairAverage:pair];

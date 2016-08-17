@@ -11,6 +11,11 @@
 #import "KeychainItemWrapper.h"
 #import "OSHomeViewController.h"
 
+@interface OSLoginViewController ()
+@property (strong) NSURL *url;
+@property (weak) IBOutlet UIWebView *webView;
+@end
+
 @implementation OSLoginViewController
 
 - (id)initWithURLString:(NSString *)urlString {

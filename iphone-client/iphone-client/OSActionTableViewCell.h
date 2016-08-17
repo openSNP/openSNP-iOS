@@ -13,6 +13,7 @@
 @interface OSActionTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *actionDescriptionLabel;
-@property (assign) void (^action)(void);
+// action to execute (passed from OSFeedItem's action, if one exists)
+@property (nonatomic, copy) void (^action)(void);
 
 @end

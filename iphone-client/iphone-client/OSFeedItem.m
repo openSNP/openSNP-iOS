@@ -9,6 +9,9 @@
 #import "OSFeedItem.h"
 #import "OSInfoTableViewCell.h"
 #import "OSActionTableViewCell.h"
+@interface OSFeedItem()
+@property (strong) NSString *imageName;
+@end
 
 @implementation OSFeedItem
 

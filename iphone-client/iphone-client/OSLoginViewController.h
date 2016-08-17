@@ -10,11 +10,8 @@
 
 @interface OSLoginViewController : UIViewController <UIWebViewDelegate, NSURLConnectionDelegate>
 
-- (id)initWithURLString:(NSString *)urlString;
-
-@property (strong) NSURL *url;
-
-@property (weak) IBOutlet UIWebView *webView;
 - (IBAction)cancel:(id)sender;
+// create an instance with urlString as the starting URL
+- (id)initWithURLString:(NSString *)urlString;
 
 @end
