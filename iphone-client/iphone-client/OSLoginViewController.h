@@ -11,7 +11,5 @@
 @interface OSLoginViewController : UIViewController <UIWebViewDelegate, NSURLConnectionDelegate>
 
 - (IBAction)cancel:(id)sender;
-// create an instance with urlString as the starting URL
-- (id)initWithURLString:(NSString *)urlString;
 
 @end

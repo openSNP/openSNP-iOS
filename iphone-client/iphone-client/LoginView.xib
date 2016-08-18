@@ -32,7 +32,7 @@
                         </navigationItem>
                     </items>
                 </navigationBar>
-                <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5SE-nz-Bai">
+                <webView contentMode="scaleToFill" scalesPageToFit="YES" allowsInlineMediaPlayback="NO" mediaPlaybackRequiresUserAction="NO" mediaPlaybackAllowsAirPlay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5SE-nz-Bai">
                     <rect key="frame" x="0.0" y="66" width="320" height="502"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <dataDetectorType key="dataDetectorTypes"/>

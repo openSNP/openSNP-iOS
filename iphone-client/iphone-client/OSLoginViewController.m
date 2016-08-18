@@ -18,9 +18,13 @@
 
 @implementation OSLoginViewController
 
-- (id)initWithURLString:(NSString *)urlString {
+- (id)init {
     self = [super initWithNibName:@"LoginView" bundle:nil];
     if (self) {
+        NSString *deviceName = [[[UIDevice currentDevice] name]
+                                stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+        NSString *urlString = [NSString stringWithFormat:@"%@?device=%@", LOGIN_URL, deviceName];
+        NSLog(@"%@", urlString);
         self.url = [NSURL URLWithString:urlString];
     }
     return self;
@@ -52,7 +56,8 @@
     NSCachedURLResponse *resp = [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request];
     NSDictionary *headers = [(NSHTTPURLResponse*)resp.response allHeaderFields];
     NSString *key, *email;
-    if ([[webView request].URL.absoluteString isEqualToString:LOGIN_URL] && ((key = headers[KEY_HTTP_HEADER_KEY]) != NULL) && (email = headers[EMAIL_HTTP_HEADER_KEY])) {
+    NSString *urlString = [[webView request].URL.absoluteString substringToIndex:[LOGIN_URL length]];
+    if ([urlString isEqualToString:LOGIN_URL] && ((key = headers[KEY_HTTP_HEADER_KEY]) != NULL) && (email = headers[EMAIL_HTTP_HEADER_KEY])) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
         [keychain setObject:(__bridge NSString *)kSecAttrAccessibleWhenUnlocked forKey:(__bridge NSString *)kSecAttrAccessible];
         

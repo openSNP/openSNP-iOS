@@ -11,6 +11,7 @@
 #define LOGIN_URL @"https://opensnp.2pitau.org/login"
 #define FEED_URL @"https://opensnp.2pitau.org/feed"
 #define UPLOAD_URL @"https://opensnp.2pitau.org/upload"
+#define AUTHORIZED_EVENT_URL @"https://opensnp.2pitau.org/authorized"
 #define KEY_HTTP_HEADER_KEY @"KEY"
 #define EMAIL_HTTP_HEADER_KEY @"EMAIL"
 #define KEYCHAIN_ID @"openSNP"

@@ -18,7 +18,6 @@
 #import "KeychainItemWrapper.h"
 
 /* TODO:
-    - it appears logging in/out doesn't successfully update the feed afterwards (manually works, though)
     - test what happens if user doesn't allow all health types
     - have some information telling the user that data-uploads will occur weekly and in the background
     - remaining 2 TODOs on this page
@@ -94,7 +93,7 @@
     [_cellData removeAllObjects];
     OSFeedItem *errorItem = [[OSFeedItem alloc] initWithBody:message
                                                         date:[NSDate date]
-                                                   imageName:@"exclamation_mark.png"];
+                                                   imageName:@"stop_sign.png"];
     errorItem.isError = TRUE;
     [self serveItem:errorItem];
 }
@@ -105,7 +104,7 @@
     OSFeedItem *loginAction = [[OSFeedItem alloc] initWithActionDescription:@"— Please login —" andCompletion:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             // display login webview
-            OSLoginViewController *loginVC = [[OSLoginViewController alloc] initWithURLString:LOGIN_URL];
+            OSLoginViewController *loginVC = [[OSLoginViewController alloc] init];
             [self presentViewController:loginVC animated:YES completion:nil];
         });
     }];
@@ -115,7 +114,7 @@
 
 - (void)displayAuthorizeAction {
     [_cellData removeAllObjects];
-    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Authorize health access —" andCompletion:^{
+    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Please authorize health access —" andCompletion:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self requestHealthAccess];
         });
@@ -124,9 +123,27 @@
     [self serveItem:actionItem];
 }
 
+- (void)authorizedHealth {
+    // set default to avoid re-requesting access
+    [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:AUTHORIZED_HEALTH_USER_KEY];
+    
+    // add authorization to the user's feed
+    NSMutableURLRequest *authorizedRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:FEED_URL]];
+    
+    // set the user's key in the request header
+    NSString *accountUsername = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
+    [authorizedRequest setValue:[self getUUID] forHTTPHeaderField:KEY_HTTP_HEADER_KEY];
+    [authorizedRequest setValue:accountUsername forHTTPHeaderField:EMAIL_HTTP_HEADER_KEY];
+    
+    [[_session dataTaskWithRequest:authorizedRequest
+                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                     // it's not very important that this request succeeds, so no error checking
+                 }] resume];
+}
+
 - (void)requestHealthAccess {
     if ([HKHealthStore isHealthDataAvailable]) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@""]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:AUTHORIZED_HEALTH_USER_KEY]) {
             // the user has already answered the request to authorize
             return;
         }
@@ -134,27 +151,27 @@
         NSSet *readDataTypes = [self dataTypesToRead];
         
         [self.healthStore requestAuthorizationToShareTypes:NULL readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
-            // view updates must occur on the main thread
             dispatch_async(dispatch_get_main_queue(), ^{
+                // view updates must occur on the main thread
                 if (!success) {
                     [self displayError:@"There was a problem getting Health data!"];
                 }
                 
-                [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:AUTHORIZED_HEALTH_USER_KEY];
+                [self authorizedHealth];
                 [self updateFeed];
-                
-                for (OSHealthPair *pair in [self dataTypesAndUnits]) {
-                    // request weekly notifications when data is modified
-                    [_healthStore enableBackgroundDeliveryForType:pair.type frequency:HKUpdateFrequencyWeekly withCompletion:^(BOOL success, NSError * _Nullable error) {
-                        if (success) {
-                            // background delivery was successful; upload the attribute
-                            [self performUpload:pair];
-                        } else {
-                            // TODO add item to (server) feed about failure
-                        }
-                    }];
-                }
             });
+            
+            for (OSHealthPair *pair in [self dataTypesAndUnits]) {
+                // request weekly notifications when data is modified
+                [_healthStore enableBackgroundDeliveryForType:pair.type frequency:HKUpdateFrequencyWeekly withCompletion:^(BOOL success, NSError * _Nullable error) {
+                    if (success) {
+                        // background delivery was successful; upload the attribute
+                        [self performUpload:pair];
+                    } else {
+                        // TODO add item to (server) feed about failure
+                    }
+                }];
+            }
         }];
         
     } else {
