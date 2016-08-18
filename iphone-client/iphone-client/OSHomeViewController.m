@@ -195,10 +195,6 @@
     
     // requesting health access will call
     [self updateFeed];
-    
-    for (OSHealthPair *pair in [self dataTypesAndUnits]) {
-        [self performUpload:pair];
-    }
 }
 
 
