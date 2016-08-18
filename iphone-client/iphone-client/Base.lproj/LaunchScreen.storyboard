@@ -35,7 +35,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logo.png" width="153" height="177"/>
+        <image name="logo.png" width="25" height="25"/>
     </resources>
     <color key="tintColor" red="0.38431372549999998" green="0.59607843140000005" blue="0.76862745099999996" alpha="1" colorSpace="calibratedRGB"/>
 </document>

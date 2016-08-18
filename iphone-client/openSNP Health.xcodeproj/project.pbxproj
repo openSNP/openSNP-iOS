@@ -124,10 +124,10 @@
 		158288D41D0FA50500798ECA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		158288D71D0FA50500798ECA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		158288D91D0FA50500798ECA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		158288DE1D0FA50500798ECA /* openSNP.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = openSNP.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		158288DE1D0FA50500798ECA /* openSNP Health.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "openSNP Health.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		158288E21D0FA50500798ECA /* iphone_clientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iphone_clientTests.m; sourceTree = "<group>"; };
 		158288E41D0FA50500798ECA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		158288E91D0FA50500798ECA /* openSNP.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = openSNP.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		158288E91D0FA50500798ECA /* openSNP Health.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "openSNP Health.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		158288ED1D0FA50500798ECA /* iphone_clientUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iphone_clientUITests.m; sourceTree = "<group>"; };
 		158288EF1D0FA50500798ECA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1582890D1D0FA84100798ECA /* iphone-client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "iphone-client.entitlements"; sourceTree = "<group>"; };
@@ -224,8 +224,8 @@
 			isa = PBXGroup;
 			children = (
 				158288C51D0FA50500798ECA /* openSNP.app */,
-				158288DE1D0FA50500798ECA /* openSNP.xctest */,
-				158288E91D0FA50500798ECA /* openSNP.xctest */,
+				158288DE1D0FA50500798ECA /* openSNP Health.xctest */,
+				158288E91D0FA50500798ECA /* openSNP Health.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -306,9 +306,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		158288C41D0FA50500798ECA /* openSNP */ = {
+		158288C41D0FA50500798ECA /* openSNP Health */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 158288F21D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNP" */;
+			buildConfigurationList = 158288F21D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNP Health" */;
 			buildPhases = (
 				158288C11D0FA50500798ECA /* Sources */,
 				158288C21D0FA50500798ECA /* Frameworks */,
@@ -318,14 +318,14 @@
 			);
 			dependencies = (
 			);
-			name = openSNP;
+			name = "openSNP Health";
 			productName = "iphone-client";
 			productReference = 158288C51D0FA50500798ECA /* openSNP.app */;
 			productType = "com.apple.product-type.application";
 		};
-		158288DD1D0FA50500798ECA /* openSNPTests */ = {
+		158288DD1D0FA50500798ECA /* openSNP HealthTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 158288F51D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNPTests" */;
+			buildConfigurationList = 158288F51D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNP HealthTests" */;
 			buildPhases = (
 				158288DA1D0FA50500798ECA /* Sources */,
 				158288DB1D0FA50500798ECA /* Frameworks */,
@@ -336,14 +336,14 @@
 			dependencies = (
 				158288E01D0FA50500798ECA /* PBXTargetDependency */,
 			);
-			name = openSNPTests;
+			name = "openSNP HealthTests";
 			productName = "iphone-clientTests";
-			productReference = 158288DE1D0FA50500798ECA /* openSNP.xctest */;
+			productReference = 158288DE1D0FA50500798ECA /* openSNP Health.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		158288E81D0FA50500798ECA /* openSNPUITests */ = {
+		158288E81D0FA50500798ECA /* openSNP HealthUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 158288F81D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNPUITests" */;
+			buildConfigurationList = 158288F81D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNP HealthUITests" */;
 			buildPhases = (
 				158288E51D0FA50500798ECA /* Sources */,
 				158288E61D0FA50500798ECA /* Frameworks */,
@@ -354,9 +354,9 @@
 			dependencies = (
 				158288EB1D0FA50500798ECA /* PBXTargetDependency */,
 			);
-			name = openSNPUITests;
+			name = "openSNP HealthUITests";
 			productName = "iphone-clientUITests";
-			productReference = 158288E91D0FA50500798ECA /* openSNP.xctest */;
+			productReference = 158288E91D0FA50500798ECA /* openSNP Health.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -388,7 +388,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 158288C01D0FA50500798ECA /* Build configuration list for PBXProject "openSNP" */;
+			buildConfigurationList = 158288C01D0FA50500798ECA /* Build configuration list for PBXProject "openSNP Health" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -401,9 +401,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				158288C41D0FA50500798ECA /* openSNP */,
-				158288DD1D0FA50500798ECA /* openSNPTests */,
-				158288E81D0FA50500798ECA /* openSNPUITests */,
+				158288C41D0FA50500798ECA /* openSNP Health */,
+				158288DD1D0FA50500798ECA /* openSNP HealthTests */,
+				158288E81D0FA50500798ECA /* openSNP HealthUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -500,12 +500,12 @@
 /* Begin PBXTargetDependency section */
 		158288E01D0FA50500798ECA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 158288C41D0FA50500798ECA /* openSNP */;
+			target = 158288C41D0FA50500798ECA /* openSNP Health */;
 			targetProxy = 158288DF1D0FA50500798ECA /* PBXContainerItemProxy */;
 		};
 		158288EB1D0FA50500798ECA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 158288C41D0FA50500798ECA /* openSNP */;
+			target = 158288C41D0FA50500798ECA /* openSNP Health */;
 			targetProxy = 158288EA1D0FA50500798ECA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -645,8 +645,8 @@
 				INFOPLIST_FILE = "iphone-clientTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "openSNP.iphone-clientTests";
-				PRODUCT_NAME = openSNP;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/openSNP.app/openSNP";
+				PRODUCT_NAME = "openSNP Health";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/openSNP Health.app/openSNP Health";
 			};
 			name = Debug;
 		};
@@ -657,8 +657,8 @@
 				INFOPLIST_FILE = "iphone-clientTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "openSNP.iphone-clientTests";
-				PRODUCT_NAME = openSNP;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/openSNP.app/openSNP";
+				PRODUCT_NAME = "openSNP Health";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/openSNP Health.app/openSNP Health";
 			};
 			name = Release;
 		};
@@ -668,7 +668,7 @@
 				INFOPLIST_FILE = "iphone-clientUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "openSNP.iphone-clientUITests";
-				PRODUCT_NAME = openSNP;
+				PRODUCT_NAME = "openSNP Health";
 				TEST_TARGET_NAME = "iphone-client";
 			};
 			name = Debug;
@@ -679,7 +679,7 @@
 				INFOPLIST_FILE = "iphone-clientUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "openSNP.iphone-clientUITests";
-				PRODUCT_NAME = openSNP;
+				PRODUCT_NAME = "openSNP Health";
 				TEST_TARGET_NAME = "iphone-client";
 			};
 			name = Release;
@@ -687,7 +687,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		158288C01D0FA50500798ECA /* Build configuration list for PBXProject "openSNP" */ = {
+		158288C01D0FA50500798ECA /* Build configuration list for PBXProject "openSNP Health" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				158288F01D0FA50500798ECA /* Debug */,
@@ -696,7 +696,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		158288F21D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNP" */ = {
+		158288F21D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNP Health" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				158288F31D0FA50500798ECA /* Debug */,
@@ -705,7 +705,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		158288F51D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNPTests" */ = {
+		158288F51D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNP HealthTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				158288F61D0FA50500798ECA /* Debug */,
@@ -714,7 +714,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		158288F81D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNPUITests" */ = {
+		158288F81D0FA50500798ECA /* Build configuration list for PBXNativeTarget "openSNP HealthUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				158288F91D0FA50500798ECA /* Debug */,

@@ -32,7 +32,7 @@
     return self;
 }
 
-- (id)initWithActionDescription:(NSString *)d andCompletion:(void (^)(void))block {
+- (id)initWithActionDescription:(NSString *)d completion:(void (^)(void))block {
     self = [super init];
     if (self) {
         self.actionDescription = d;
@@ -47,7 +47,7 @@
 - (NSString *)formatDateLabel {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
     dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
     
     return [dateFormatter stringFromDate:self.date];

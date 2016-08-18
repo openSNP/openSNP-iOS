@@ -53,10 +53,13 @@
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = FALSE;
+    
     NSCachedURLResponse *resp = [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request];
     NSDictionary *headers = [(NSHTTPURLResponse*)resp.response allHeaderFields];
     NSString *key, *email;
     NSString *urlString = [[webView request].URL.absoluteString substringToIndex:[LOGIN_URL length]];
+    
     if ([urlString isEqualToString:LOGIN_URL] && ((key = headers[KEY_HTTP_HEADER_KEY]) != NULL) && (email = headers[EMAIL_HTTP_HEADER_KEY])) {
         KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:KEYCHAIN_ID accessGroup:nil];
         [keychain setObject:(__bridge NSString *)kSecAttrAccessibleWhenUnlocked forKey:(__bridge NSString *)kSecAttrAccessible];
@@ -67,12 +70,14 @@
         [keychain setObject:email forKey:(__bridge NSString *)kSecAttrAccount];
         
         
+        // need local pointers since ``self.presentingViewController`` will be cleared before completion is run
+        UINavigationController *presentingVC = (UINavigationController *)self.presentingViewController;
+        OSHomeViewController *homeVC = (OSHomeViewController *)presentingVC.topViewController;
         [self dismissViewControllerAnimated:TRUE completion:^{
-            [self.presentingViewController performSelector:@selector(updateAfterLogin)];
-        }];
+            [homeVC performSelector:@selector(updateAfterLogin)];
+         }];
     }
     
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = FALSE;
 }
 
 

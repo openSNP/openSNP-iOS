@@ -32,6 +32,6 @@
 - (id)initWithBody:(NSString *)b date:(NSDate *)d imageName:(NSString *)i;
 
 // use this initializer when creating a OSActionTableViewCell instance
-- (id)initWithActionDescription:(NSString *)d andCompletion:(void (^)(void))block;
+- (id)initWithActionDescription:(NSString *)d completion:(void (^)(void))block;
     
 @end

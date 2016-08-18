@@ -18,8 +18,6 @@
 #import "KeychainItemWrapper.h"
 
 /* TODO:
-    - test what happens if user doesn't allow all health types
-    - have some information telling the user that data-uploads will occur weekly and in the background
     - remaining 2 TODOs on this page
  */
 @interface OSHomeViewController ()
@@ -101,7 +99,7 @@
 
 - (void)displayLoginAction {
     [_cellData removeAllObjects];
-    OSFeedItem *loginAction = [[OSFeedItem alloc] initWithActionDescription:@"— Please login —" andCompletion:^{
+    OSFeedItem *loginAction = [[OSFeedItem alloc] initWithActionDescription:@"— Please login —" completion:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             // display login webview
             OSLoginViewController *loginVC = [[OSLoginViewController alloc] init];
@@ -114,13 +112,21 @@
 
 - (void)displayAuthorizeAction {
     [_cellData removeAllObjects];
-    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Please authorize health access —" andCompletion:^{
+    OSFeedItem *actionItem = [[OSFeedItem alloc] initWithActionDescription:@"— Please authorize health access —" completion:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self requestHealthAccess];
         });
     }];
                        
     [self serveItem:actionItem];
+    
+    UIAlertController *welcomeAlert = [UIAlertController alertControllerWithTitle:@"Welcome to openSNP Health!"
+                                                                          message:@"By using this client, you're contributing to science; thanks! After allowing us to read some of your Health data, we'll upload these data to our server and into the public domain, where anyone can download them.\n\nUploads occur weekly and contain a single number for each attribute (just a weekly average). You can stop uploads at any time by logging-out from the gear icon or delete past uploads from your account on openSNP.org."
+                                                                   preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *close = [UIAlertAction actionWithTitle:@"※" style:UIAlertActionStyleCancel handler:nil];
+    [welcomeAlert addAction:close];
+    [self presentViewController:welcomeAlert animated:YES completion:nil];
 }
 
 - (void)authorizedHealth {
@@ -128,7 +134,7 @@
     [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:AUTHORIZED_HEALTH_USER_KEY];
     
     // add authorization to the user's feed
-    NSMutableURLRequest *authorizedRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:FEED_URL]];
+    NSMutableURLRequest *authorizedRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:AUTHORIZED_EVENT_URL]];
     
     // set the user's key in the request header
     NSString *accountUsername = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
@@ -379,6 +385,7 @@
 - (void)updateAfterLogin {
     self.navigationItem.rightBarButtonItem.enabled = true;
     [self updateFeed];
+    
 }
 
 // upload an individual health-pair
@@ -430,11 +437,19 @@
                                                                        options:HKStatisticsOptionNone
                                                              completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
                                                                  // average value over the course of the week
-                                                                 HKQuantity *quantity = result.averageQuantity;
-                                                                 CGFloat d_value = [quantity doubleValueForUnit:pair.unit];
+                                                                 HKQuantity *average = result.averageQuantity;
+                                                                 HKQuantity *min = result.minimumQuantity;
+                                                                 HKQuantity *max = result.maximumQuantity;
+                                                                 
+                                                                 CGFloat d_average = [average doubleValueForUnit:pair.unit];
+                                                                 CGFloat d_min = [min doubleValueForUnit:pair.unit];
+                                                                 CGFloat d_max = [max doubleValueForUnit:pair.unit];
                                                                  // create a dictionary with the string-classname of the attribute along with value ``quantity``
                                                                  _toUpload = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                              [NSNumber numberWithFloat:d_value], @"value",
+                                                                              [NSNumber numberWithFloat:d_average], @"average",
+                                                                              [NSNumber numberWithFloat:d_min], @"min",
+                                                                              [NSNumber numberWithFloat:d_max], @"max",
+                                                                              [NSString stringWithFormat:@"%@", pair.unit], @"unit",
                                                                               [NSString stringWithFormat:@"%@", pair.type], @"type",
                                                                               nil];
                                                              }];
