@@ -120,13 +120,17 @@
                        
     [self serveItem:actionItem];
     
-    UIAlertController *welcomeAlert = [UIAlertController alertControllerWithTitle:@"Welcome to openSNP Health!"
-                                                                          message:@"By using this client, you're contributing to science; thanks! After allowing us to read some of your Health data, we'll upload these data to our server and into the public domain, where anyone can download them.\n\nUploads occur weekly and contain a single number for each attribute (just a weekly average). You can stop uploads at any time by logging-out from the gear icon or delete past uploads from your account on openSNP.org."
-                                                                   preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *close = [UIAlertAction actionWithTitle:@"※" style:UIAlertActionStyleCancel handler:nil];
-    [welcomeAlert addAction:close];
-    [self presentViewController:welcomeAlert animated:YES completion:nil];
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:READ_WELCOME_USER_KEY]) {
+        UIAlertController *welcomeAlert = [UIAlertController alertControllerWithTitle:@"Welcome to openSNP Health!"
+                                                                              message:WELCOME_MESSAGE
+                                                                       preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *close = [UIAlertAction actionWithTitle:@"※" style:UIAlertActionStyleCancel handler:nil];
+        [welcomeAlert addAction:close];
+        [self presentViewController:welcomeAlert animated:YES completion:^{
+            [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:READ_WELCOME_USER_KEY];
+        }];
+    }
 }
 
 - (void)authorizedHealth {
@@ -191,6 +195,10 @@
     
     // requesting health access will call
     [self updateFeed];
+    
+    for (OSHealthPair *pair in [self dataTypesAndUnits]) {
+        [self performUpload:pair];
+    }
 }
 
 
@@ -312,7 +320,7 @@
 - (void)updateFeedFromDictionary:(NSDictionary *)respDict {
     if ([respDict[@"error"] integerValue] == 1) {
         // there's a 400-coded error
-        [self displayError:[NSString stringWithFormat:@"Request denied because \"%@\". This is likely a bug; tap to file a report.", respDict[@"message"]]];
+        [self displayError:[NSString stringWithFormat:@"Request denied because \"%@\". This could be a bug; tap to file a report.", respDict[@"message"]]];
     } else {
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         NSTimeZone *tz = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
@@ -351,10 +359,13 @@
         
         [[_session dataTaskWithRequest:feedRequest
                      completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                         [_cellData removeAllObjects];
+                         if (_cellData && _cellData.count)
+                             [_cellData removeAllObjects];
+                         else
+                             _cellData = [NSMutableArray array];
                          
+                         //NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                          if (!error) {
-                             //NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                              
                              NSError *jsonError = nil;
                              NSDictionary *respDict = [NSJSONSerialization JSONObjectWithData:data
@@ -384,8 +395,6 @@
 // called after successful login from OSLoginVC
 - (void)updateAfterLogin {
     self.navigationItem.rightBarButtonItem.enabled = true;
-    [self updateFeed];
-    
 }
 
 // upload an individual health-pair
@@ -393,6 +402,7 @@
     _toUpload = nil;
     [self getPairAverage:pair];
     while (_toUpload == nil) { /* spin */ }
+    NSLog(@"%@", _toUpload);
     
     NSError *error;
     // serialize the ``_toUpload`` dict (with attribute name and weekly average)
@@ -412,7 +422,7 @@
     
     [[_session dataTaskWithRequest:uploadRequest
                  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                     [_cellData removeAllObjects];
+                     [self updateFeed];
                      
                      if (error) {
                          // TODO: handle connection error (prompt to retry)
@@ -436,6 +446,11 @@
                                                        quantitySamplePredicate:predicate
                                                                        options:HKStatisticsOptionNone
                                                              completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
+                                                                 NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                                                                 NSTimeZone *tz = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+                                                                 [dateFormatter setTimeZone:tz];
+                                                                 [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                                                                 
                                                                  // average value over the course of the week
                                                                  HKQuantity *average = result.averageQuantity;
                                                                  HKQuantity *min = result.minimumQuantity;
@@ -451,6 +466,9 @@
                                                                               [NSNumber numberWithFloat:d_max], @"max",
                                                                               [NSString stringWithFormat:@"%@", pair.unit], @"unit",
                                                                               [NSString stringWithFormat:@"%@", pair.type], @"type",
+                                                                              [dateFormatter stringFromDate:start], @"utc_start_date",
+                                                                              [dateFormatter stringFromDate:end], @"utc_end_date",
+                                                                              [[NSTimeZone localTimeZone] name], @"local_timezone_name",
                                                                               nil];
                                                              }];
     [self.healthStore executeQuery:query];

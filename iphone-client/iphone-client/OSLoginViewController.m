@@ -24,7 +24,6 @@
         NSString *deviceName = [[[UIDevice currentDevice] name]
                                 stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
         NSString *urlString = [NSString stringWithFormat:@"%@?device=%@", LOGIN_URL, deviceName];
-        NSLog(@"%@", urlString);
         self.url = [NSURL URLWithString:urlString];
     }
     return self;

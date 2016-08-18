@@ -61,7 +61,7 @@
 - (void)reportBug {
     BOOL canSendMail = [MFMailComposeViewController canSendMail];
     
-    UIAlertController *reportAlert = [UIAlertController alertControllerWithTitle:@"Report a bug?" message:@"Send us an email if you've encounterd a bug." preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController *reportAlert = [UIAlertController alertControllerWithTitle:@"Report a bug?" message:@"Send us an email if you've encountered a bug." preferredStyle:UIAlertControllerStyleActionSheet];
     
     if (canSendMail) {
     

@@ -179,18 +179,33 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ul2-UD-Idl">
-                                <rect key="frame" x="122" y="237" width="76" height="30"/>
-                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <rect key="frame" x="80" y="237" width="76" height="30"/>
+                                <color key="backgroundColor" red="0.1529411765" green="0.3921568627" blue="0.58823529409999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="WMJ-jH-tDp"/>
                                     <constraint firstAttribute="width" constant="76" id="aJ6-Jt-ujN"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="16"/>
+                                <state key="normal" title="info">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="showInfo:" destination="uGR-Ml-vPB" eventType="touchUpInside" id="ZBI-eV-ndd"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bSa-2R-6bL">
+                                <rect key="frame" x="164" y="237" width="76" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="0fT-Td-zsM"/>
+                                    <constraint firstAttribute="width" constant="76" id="xmn-Gc-ng8"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="16"/>
                                 <state key="normal" title="logout">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="logout:" destination="uGR-Ml-vPB" eventType="touchUpInside" id="wsf-YM-6Gj"/>
+                                    <action selector="logout:" destination="uGR-Ml-vPB" eventType="touchUpInside" id="xhM-sz-6MI"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="eqX-tI-Lkh">
@@ -205,12 +220,14 @@
                         </subviews>
                         <color key="backgroundColor" red="0.38431372549999998" green="0.59607843140000005" blue="0.76862745099999996" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="bSa-2R-6bL" firstAttribute="baseline" secondItem="ul2-UD-Idl" secondAttribute="baseline" id="7hS-gX-G3d"/>
                             <constraint firstItem="ul2-UD-Idl" firstAttribute="centerY" secondItem="aoF-dG-DLj" secondAttribute="centerY" id="OlM-27-eu0"/>
                             <constraint firstItem="eqX-tI-Lkh" firstAttribute="leading" secondItem="aoF-dG-DLj" secondAttribute="leadingMargin" constant="4" id="SVZ-BT-9Ws"/>
+                            <constraint firstItem="bSa-2R-6bL" firstAttribute="leading" secondItem="ul2-UD-Idl" secondAttribute="trailing" constant="8" symbolic="YES" id="UkP-mW-LR6"/>
                             <constraint firstItem="lNi-ru-hHo" firstAttribute="top" secondItem="eqX-tI-Lkh" secondAttribute="bottom" constant="8" symbolic="YES" id="jbK-7c-irg"/>
                             <constraint firstItem="ul2-UD-Idl" firstAttribute="top" secondItem="bFT-NP-gVf" secondAttribute="bottom" constant="237" id="t3B-Ea-B87"/>
-                            <constraint firstItem="eqX-tI-Lkh" firstAttribute="centerX" secondItem="ul2-UD-Idl" secondAttribute="centerX" id="upq-wj-eCC"/>
-                            <constraint firstItem="ul2-UD-Idl" firstAttribute="centerX" secondItem="aoF-dG-DLj" secondAttribute="centerX" id="uqc-qI-HGC"/>
+                            <constraint firstItem="eqX-tI-Lkh" firstAttribute="centerX" secondItem="ul2-UD-Idl" secondAttribute="centerX" constant="42" id="upq-wj-eCC"/>
+                            <constraint firstItem="ul2-UD-Idl" firstAttribute="centerX" secondItem="aoF-dG-DLj" secondAttribute="centerX" constant="-42" id="uqc-qI-HGC"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -221,7 +238,8 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="accountNameLabel" destination="eqX-tI-Lkh" id="vbE-OD-Iaw"/>
-                        <outlet property="logoutButton" destination="ul2-UD-Idl" id="CcJ-h1-NfG"/>
+                        <outletCollection property="roundedButtons" destination="ul2-UD-Idl" id="O5N-ts-Ng2"/>
+                        <outletCollection property="roundedButtons" destination="bSa-2R-6bL" id="Z66-O9-FID"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="czQ-IC-7yB" userLabel="First Responder" sceneMemberID="firstResponder"/>

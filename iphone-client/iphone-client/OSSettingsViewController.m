@@ -12,6 +12,12 @@
 #import "KeychainItemWrapper.h"
 #import "OSConstants.h"
 
+@interface OSSettingsViewController()
+// outlets are just for styling
+@property (nonatomic, strong) IBOutletCollection(UIButton) NSArray *roundedButtons;
+@property (weak) IBOutlet UILabel *accountNameLabel;
+
+@end
 
 @implementation OSSettingsViewController
 // TODO: delete data from server
@@ -24,17 +30,29 @@
     [super viewDidLoad];
     self.navigationItem.title = @"settings";
     
-    _logoutButton.layer.cornerRadius = 2;
-    _logoutButton.layer.borderWidth = 2;
-    _logoutButton.layer.borderColor = [UIColor colorWithRed:160. green:0. blue:0. alpha:1.].CGColor;
+    for (UIButton *button in _roundedButtons) {
+        button.layer.cornerRadius = 3;
+        button.layer.borderWidth = 1;
+        button.layer.borderColor = [button backgroundColor].CGColor;
+    }
     
     _accountNameLabel.text = [[self getKeychain] objectForKey:(__bridge NSString *)kSecAttrAccount];
+}
+
+- (IBAction)showInfo:(id)sender {
+    UIAlertController *welcomeAlert = [UIAlertController alertControllerWithTitle:@"Welcome to openSNP Health!"
+                                                                          message:WELCOME_MESSAGE
+                                                                   preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *close = [UIAlertAction actionWithTitle:@"※" style:UIAlertActionStyleCancel handler:nil];
+    [welcomeAlert addAction:close];
+    [self presentViewController:welcomeAlert animated:YES completion:nil];
 }
 
 
 - (IBAction)logout:(id)sender {
     UIAlertController *logoutAlert = [UIAlertController alertControllerWithTitle:@"You're sure?"
-                                                                         message:@"Logging out will stop future uploads but won't delete previous ones stored on openSNP's servers."
+                                                                         message:@"Logging out will stop future uploads but won't delete previous ones."
                                                                   preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction *confirm = [UIAlertAction actionWithTitle:@"logout" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
@@ -63,5 +81,7 @@
     
     [self presentViewController:logoutAlert animated:YES completion:nil];
 }
+
+
 
 @end
