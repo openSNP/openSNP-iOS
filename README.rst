@@ -3,7 +3,7 @@
 openSNP Health : uploads your Apple Health phenotypes to openSNP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-|...| since your these data, along with `the genotyping you provided on openSNP.org <https://opensnp.org/genotypes/new#new_genotype>`_, may help scientists find new associations.
+|...| since these data, along with `the genotyping you provided on openSNP.org <https://opensnp.org/genotypes/new#new_genotype>`_, may help scientists find new associations.
 
 **We're waiting to submit the app as we iron-out kinks and integrate the testing backend with the core server**.
 

@@ -18,12 +18,15 @@
 #import "KeychainItemWrapper.h"
 
 /* TODO:
-    - remaining 2 TODOs on this page
+    - uploads in single feed item per-week ("uploaded 32 attributes", for example) <- requires server change, too, of course.
+        - maybe option to expand to see attribute names and values?
  */
 @interface OSHomeViewController ()
 @property (strong, nonatomic) NSMutableArray<OSFeedItem *> *cellData;
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSDictionary *toUpload;
+// don't refresh the feed when the view is presented
+@property (assign) BOOL preserveFeed;
 @end
 
 @implementation OSHomeViewController
@@ -52,6 +55,8 @@
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     sessionConfig.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
     self.session = [NSURLSession sessionWithConfiguration:sessionConfig];
+    
+    self.preserveFeed = FALSE;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -178,7 +183,7 @@
                         // background delivery was successful; upload the attribute
                         [self performUpload:pair];
                     } else {
-                        // TODO add item to (server) feed about failure
+                        // there's also not much we can do here...
                     }
                 }];
             }
@@ -193,8 +198,11 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // requesting health access will call
-    [self updateFeed];
+    if (!_preserveFeed) {
+        [self updateFeed];
+    } else {
+        _preserveFeed = FALSE;
+    }
 }
 
 
@@ -299,6 +307,9 @@
     OSFeedItem *item = _cellData[indexPath.row];
     
     if (item.cellClass == [OSActionTableViewCell class]) {
+        // it would be inconvenient to return to a differently-ordered feed,
+        //  so prevent refreshing on return to this view
+        _preserveFeed = TRUE;
         item.action();
     }
 }
@@ -391,6 +402,7 @@
 // called after successful login from OSLoginVC
 - (void)updateAfterLogin {
     self.navigationItem.rightBarButtonItem.enabled = true;
+    //viewDidAppear will handle the feed refresh
 }
 
 // upload an individual health-pair
@@ -421,7 +433,7 @@
                      [self updateFeed];
                      
                      if (error) {
-                         // TODO: handle connection error (prompt to retry)
+                         // there's not so much we can do if there's no connection...
                      }
                  }] resume];
 }
