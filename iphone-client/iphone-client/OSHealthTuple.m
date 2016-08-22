@@ -6,14 +6,15 @@
 //  Copyright © 2016 openSNP. All rights reserved.
 //
 
-#import "OSHealthPair.h"
+#import "OSHealthTuple.h"
 
-@implementation OSHealthPair
-- (id)initWithQuantityTypeId:(nonnull NSString *)qtIdentifier unit:(HKUnit *)unit {
+@implementation OSHealthTuple
+- (id)initWithQuantityTypeId:(nonnull NSString *)qtIdentifier unit:(HKUnit *)unit name:(NSString *)name {
     self = [super init];
     if (self) {
         _type = [HKObjectType quantityTypeForIdentifier:qtIdentifier];
         _unit = unit;
+        _name = name;
     }
     
     return self;

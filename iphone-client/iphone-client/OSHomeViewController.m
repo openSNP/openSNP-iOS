@@ -11,7 +11,7 @@
 #import "OSSystemMessageViewer.h"
 #import "OSActionTableViewCell.h"
 #import "OSFeedItem.h"
-#import "OSHealthPair.h"
+#import "OSHealthTuple.h"
 #import "NSArray+OSFunctionalMap.h"
 #import "OSLoginViewController.h"
 #import "OSConstants.h"
@@ -176,12 +176,12 @@
                 [self updateFeed];
             });
             
-            for (OSHealthPair *pair in [self dataTypesAndUnits]) {
+            for (OSHealthTuple *t in [self dataTypesAndUnits]) {
                 // request weekly notifications when data is modified
-                [_healthStore enableBackgroundDeliveryForType:pair.type frequency:HKUpdateFrequencyWeekly withCompletion:^(BOOL success, NSError * _Nullable error) {
+                [_healthStore enableBackgroundDeliveryForType:t.type frequency:HKUpdateFrequencyWeekly withCompletion:^(BOOL success, NSError * _Nullable error) {
                     if (success) {
                         // background delivery was successful; upload the attribute
-                        [self performUpload:pair];
+                        [self performUpload:t];
                     } else {
                         // there's also not much we can do here...
                     }
@@ -197,6 +197,10 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    // for testing
+    //for (OSHealthTuple *t in [self dataTypesAndUnits]) {
+    //    [self performUpload:t];
+    //}
     
     if (!_preserveFeed) {
         [self updateFeed];
@@ -215,52 +219,53 @@
 }
 
 
-- (NSArray <OSHealthPair *>*)dataTypesAndUnits {
-    return [@[@[HKQuantityTypeIdentifierBodyMassIndex, [HKUnit countUnit]],
-              @[HKQuantityTypeIdentifierBodyFatPercentage, [HKUnit percentUnit]],
-              @[HKQuantityTypeIdentifierHeight, [HKUnit meterUnit]],
-              @[HKQuantityTypeIdentifierBodyMass, [HKUnit gramUnit]],
-              @[HKQuantityTypeIdentifierLeanBodyMass, [HKUnit gramUnit]],
-              @[HKQuantityTypeIdentifierStepCount, [HKUnit countUnit]],
-              @[HKQuantityTypeIdentifierDistanceWalkingRunning, [HKUnit meterUnit]],
-              @[HKQuantityTypeIdentifierDistanceCycling, [HKUnit meterUnit]],
-              @[HKQuantityTypeIdentifierBasalEnergyBurned, [HKUnit jouleUnit]],
-              @[HKQuantityTypeIdentifierActiveEnergyBurned, [HKUnit jouleUnit]],
-              @[HKQuantityTypeIdentifierFlightsClimbed, [HKUnit countUnit]],
-              @[HKQuantityTypeIdentifierNikeFuel, [HKUnit countUnit]],
-              @[HKQuantityTypeIdentifierAppleExerciseTime, [HKUnit secondUnit]],
-              @[HKQuantityTypeIdentifierHeartRate, [HKUnit unitFromString:@"count/min"]],
-              @[HKQuantityTypeIdentifierBodyTemperature, [HKUnit degreeCelsiusUnit]],
-              @[HKQuantityTypeIdentifierBasalBodyTemperature, [HKUnit degreeCelsiusUnit]],
-              @[HKQuantityTypeIdentifierBloodPressureSystolic, [HKUnit millimeterOfMercuryUnit]],
-              @[HKQuantityTypeIdentifierBloodPressureDiastolic, [HKUnit millimeterOfMercuryUnit]],
-              @[HKQuantityTypeIdentifierRespiratoryRate, [HKUnit unitFromString:@"count/min"]],
-              @[HKQuantityTypeIdentifierOxygenSaturation, [HKUnit percentUnit]],
-              @[HKQuantityTypeIdentifierPeripheralPerfusionIndex, [HKUnit percentUnit]],
+- (NSArray <OSHealthTuple *>*)dataTypesAndUnits {
+    return [@[@[HKQuantityTypeIdentifierBodyMassIndex, [HKUnit countUnit], @"body_mass_index"],
+              @[HKQuantityTypeIdentifierBodyFatPercentage, [HKUnit percentUnit], @"body_fat_percentage"],
+              @[HKQuantityTypeIdentifierHeight, [HKUnit meterUnit], @"height"],
+              @[HKQuantityTypeIdentifierBodyMass, [HKUnit gramUnit], @"body_mass"],
+              @[HKQuantityTypeIdentifierLeanBodyMass, [HKUnit gramUnit], @"lean_body_mass"],
+              @[HKQuantityTypeIdentifierStepCount, [HKUnit countUnit], @"step_count"],
+              @[HKQuantityTypeIdentifierDistanceWalkingRunning, [HKUnit meterUnit], @"distance_walking_running"],
+              @[HKQuantityTypeIdentifierDistanceCycling, [HKUnit meterUnit], @"distance_cycling"],
+              @[HKQuantityTypeIdentifierBasalEnergyBurned, [HKUnit jouleUnit], @"basal_energy_burned"],
+              @[HKQuantityTypeIdentifierActiveEnergyBurned, [HKUnit jouleUnit], @"active_energy_burned"],
+              @[HKQuantityTypeIdentifierFlightsClimbed, [HKUnit countUnit], @"flights_climbed"],
+              @[HKQuantityTypeIdentifierNikeFuel, [HKUnit countUnit], @"nike_fuel"],
+              @[HKQuantityTypeIdentifierAppleExerciseTime, [HKUnit secondUnit], @"apple_exercise_time"],
+              @[HKQuantityTypeIdentifierHeartRate, [HKUnit unitFromString:@"count/min"], @"heart_rate"],
+              @[HKQuantityTypeIdentifierBodyTemperature, [HKUnit degreeCelsiusUnit], @"body_temperature"],
+              @[HKQuantityTypeIdentifierBasalBodyTemperature, [HKUnit degreeCelsiusUnit], @"basal_body_temperature"],
+              @[HKQuantityTypeIdentifierBloodPressureSystolic, [HKUnit millimeterOfMercuryUnit], @"blood_pressure_systolic"],
+              @[HKQuantityTypeIdentifierBloodPressureDiastolic, [HKUnit millimeterOfMercuryUnit], @"blood_pressure_diastolic"],
+              @[HKQuantityTypeIdentifierRespiratoryRate, [HKUnit unitFromString:@"count/min"], @"respiratory_rate"],
+              @[HKQuantityTypeIdentifierOxygenSaturation, [HKUnit percentUnit], @"oxygen_saturation"],
+              @[HKQuantityTypeIdentifierPeripheralPerfusionIndex, [HKUnit percentUnit], @"peripheral_perfusion_index"],
               @[HKQuantityTypeIdentifierBloodGlucose, [[HKUnit moleUnitWithMetricPrefix:HKMetricPrefixMilli
                                                                               molarMass:HKUnitMolarMassBloodGlucose]
-                                                       unitDividedByUnit:[HKUnit literUnit]]],
-              @[HKQuantityTypeIdentifierNumberOfTimesFallen, [HKUnit countUnit]],
-              @[HKQuantityTypeIdentifierElectrodermalActivity, [HKUnit siemenUnit]],
-              @[HKQuantityTypeIdentifierBloodAlcoholContent, [HKUnit percentUnit]],
-              @[HKQuantityTypeIdentifierInhalerUsage, [HKUnit countUnit]],
-              @[HKQuantityTypeIdentifierForcedVitalCapacity, [HKUnit unitFromString:@"cm^3"]],
-              @[HKQuantityTypeIdentifierForcedExpiratoryVolume1, [HKUnit unitFromString:@"cm^3"]],
-              @[HKQuantityTypeIdentifierPeakExpiratoryFlowRate, [HKUnit unitFromString:@"cm^3"]]]
+                                                       unitDividedByUnit:[HKUnit literUnit]], @"blood_glucose"],
+              @[HKQuantityTypeIdentifierNumberOfTimesFallen, [HKUnit countUnit], @"number_times_fallen"],
+              @[HKQuantityTypeIdentifierElectrodermalActivity, [HKUnit siemenUnit], @"electrodermal_activity"],
+              @[HKQuantityTypeIdentifierBloodAlcoholContent, [HKUnit percentUnit], @"blood_alcohol_content"],
+              @[HKQuantityTypeIdentifierInhalerUsage, [HKUnit countUnit], @"inhaler_usage"],
+              @[HKQuantityTypeIdentifierForcedVitalCapacity, [HKUnit unitFromString:@"cm^3"], @"forced_vital_capacity"],
+              @[HKQuantityTypeIdentifierForcedExpiratoryVolume1, [HKUnit unitFromString:@"cm^3"], @"forced_expiratory_volume"],
+              @[HKQuantityTypeIdentifierPeakExpiratoryFlowRate, [HKUnit unitFromString:@"cm^3"], @"peak_expiratory_flow_rate"]]
             map:^(id x, NSUInteger i) {
-                // convert the 2D-array to health-pairs (this is just convenience/nomenclature)
-                return [[OSHealthPair alloc] initWithQuantityTypeId:x[0] unit:x[1]];
+                // convert the 2D-array to health-tuples (this is just convenience/nomenclature)
+                return [[OSHealthTuple alloc] initWithQuantityTypeId:x[0] unit:x[1] name:x[2]];
             }];
 }
 
 
 
-// returns data to upload
+// returns data to upload (types only)
 - (NSSet *)dataTypesToRead {
-    NSArray *types = [[self dataTypesAndUnits] map:^(OSHealthPair *x, NSUInteger i) {
-        return x.type;
+    NSArray *types = [[self dataTypesAndUnits] map:^(OSHealthTuple *t, NSUInteger i) {
+        return t.type;
     }];
     
+    // combine HKQuantities with HKCharactistics
     return [NSSet setWithArray:
             [types arrayByAddingObjectsFromArray:[self characteristicsToRead]]];
 }
@@ -306,10 +311,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OSFeedItem *item = _cellData[indexPath.row];
     
-    if (item.cellClass == [OSActionTableViewCell class]) {
+    if (item.cellClass == [OSInfoTableViewCell class]) {
         // it would be inconvenient to return to a differently-ordered feed,
         //  so prevent refreshing on return to this view
         _preserveFeed = TRUE;
+    } else {
         item.action();
     }
 }
@@ -406,9 +412,9 @@
 }
 
 // upload an individual health-pair
-- (void)performUpload:(OSHealthPair *)pair {
+- (void)performUpload:(OSHealthTuple *)t {
     _toUpload = nil;
-    [self getPairAverage:pair];
+    [self getPairAverage:t];
     while (_toUpload == nil) { /* spin */ }
     NSLog(@"%@", _toUpload);
     
@@ -430,11 +436,7 @@
     
     [[_session dataTaskWithRequest:uploadRequest
                  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                     [self updateFeed];
-                     
-                     if (error) {
-                         // there's not so much we can do if there's no connection...
-                     }
+                     // there's not so much we can do if there's no connection...
                  }] resume];
 }
 
@@ -442,7 +444,7 @@
 #pragma mark Health queries
 
 // find the average of the type of ``pair`` above some time
-- (void)getPairAverage:(OSHealthPair *)pair {
+- (void)getPairAverage:(OSHealthTuple *)t {
     NSDate *end = [NSDate date];
     // ``start`` is a week ago
     NSDate *start = [NSDate dateWithTimeInterval:-60*60*24*7 sinceDate:end];
@@ -450,7 +452,7 @@
     NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate:start
                                                                endDate:end
                                                                options:HKQueryOptionStrictStartDate];
-    HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:pair.type
+    HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:t.type
                                                        quantitySamplePredicate:predicate
                                                                        options:HKStatisticsOptionNone
                                                              completionHandler:^(HKStatisticsQuery *q, HKStatistics *result, NSError *error) {
@@ -464,16 +466,17 @@
                                                                  HKQuantity *min = result.minimumQuantity;
                                                                  HKQuantity *max = result.maximumQuantity;
                                                                  
-                                                                 CGFloat d_average = [average doubleValueForUnit:pair.unit];
-                                                                 CGFloat d_min = [min doubleValueForUnit:pair.unit];
-                                                                 CGFloat d_max = [max doubleValueForUnit:pair.unit];
+                                                                 CGFloat d_average = [average doubleValueForUnit:t.unit];
+                                                                 CGFloat d_min = [min doubleValueForUnit:t.unit];
+                                                                 CGFloat d_max = [max doubleValueForUnit:t.unit];
                                                                  // create a dictionary with the string-classname of the attribute along with value ``quantity``
                                                                  _toUpload = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                              t.name, @"name",
                                                                               [NSNumber numberWithFloat:d_average], @"average",
                                                                               [NSNumber numberWithFloat:d_min], @"min",
                                                                               [NSNumber numberWithFloat:d_max], @"max",
-                                                                              [NSString stringWithFormat:@"%@", pair.unit], @"unit",
-                                                                              [NSString stringWithFormat:@"%@", pair.type], @"type",
+                                                                              [NSString stringWithFormat:@"%@", t.unit], @"unit",
+                                                                              [NSString stringWithFormat:@"%@", t.type], @"type",
                                                                               [dateFormatter stringFromDate:start], @"utc_start_date",
                                                                               [dateFormatter stringFromDate:end], @"utc_end_date",
                                                                               [[NSTimeZone localTimeZone] name], @"local_timezone_name",
